@@ -264,19 +264,19 @@
                 {"name": "record5EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录5结束时间"}
             ]},
             "pipeEnviroment":{"commandId": "0x87", "cnName":"管道环境参数",  "paras":[
-                {"name": "record1Pressure", "dataType": "int", "length": 2, "unit":"Pa", "expand": 0, "cnName":"记录1压力"},
+                {"name": "record1Pressure", "dataType": "int", "length": 2, "unit":"Pa",  "cnName":"记录1压力"},
                 {"name": "record1Temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"记录1温度"},
                 {"name": "record1HourMin", "dataType": "uint", "length": 1,"unit":"", "cnName":"记录1时间"},
-                {"name": "record2Pressure", "dataType": "int", "length": 2, "unit":"Pa", "expand": 0, "cnName":"记录2压力"},
+                {"name": "record2Pressure", "dataType": "int", "length": 2, "unit":"Pa", "cnName":"记录2压力"},
                 {"name": "record2Temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"记录2温度"},
                 {"name": "record2HourMin", "dataType": "uint", "length": 1,"unit":"", "cnName":"记录2时间"},
-                {"name": "record3Pressure", "dataType": "int", "length": 2, "unit":"Pa", "expand": 0, "cnName":"记录3压力"},
+                {"name": "record3Pressure", "dataType": "int", "length": 2, "unit":"Pa", "cnName":"记录3压力"},
                 {"name": "record3Temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"记录3温度"},
                 {"name": "record3HourMin", "dataType": "uint", "length": 1,"unit":"", "cnName":"记录3时间"},
-                {"name": "record4Pressure", "dataType": "int", "length": 2, "unit":"Pa", "expand": 0, "cnName":"记录4压力"},
+                {"name": "record4Pressure", "dataType": "int", "length": 2, "unit":"Pa","cnName":"记录4压力"},
                 {"name": "record4Temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"记录4温度"},
                 {"name": "record4HourMin", "dataType": "uint", "length": 1,"unit":"", "cnName":"记录4时间"},
-                {"name": "record5Pressure", "dataType": "int", "length": 2, "unit":"Pa", "expand": 0, "cnName":"记录5压力"},
+                {"name": "record5Pressure", "dataType": "int", "length": 2, "unit":"Pa", "cnName":"记录5压力"},
                 {"name": "record5Temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"记录5温度"},
                 {"name": "record5HourMin", "dataType": "uint", "length": 1,"unit":"", "cnName":"记录5时间"}
             ]}
