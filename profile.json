@@ -63,7 +63,7 @@
                 {"name": "port", "dataType": "string", "length": 10, "unit":"", "cnName":"端口"}
             ]},
             "alarm":{"commandId": "0x81", "cnName":"故障报警", "paras":[
-                {"name": "type", "dataType": "uint", "length": 1, "unit":"", "cnName":"上传类型"},
+                {"name": "type", "dataType": "uint", "length": 1, "unit":"", "cnName":"上传类型", "remark":"0：触发错误，1：清除错误"},
                 {"name": "errorNumber", "dataType": "uint", "length": 1, "unit":"", "cnName":"故障序号"},
                 {"name": "errorFlags", "dataType": "uint", "length": 4, "unit":"", "cnName":"当前故障标志位"},
                 {"name": "lastTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"末次时间"},
@@ -129,7 +129,13 @@
         "cnName": "计量相关",
         "methods": {
             "charge":{"commandId": "0x13", "cnName":"充值", "paras":[
-                {"name": "type", "dataType": "uint", "length": 1, "default":1, "unit":"", "cnName":"类型", "selection":[{"value": 1, "label":"工况流量"},{"value": 2, "label":"标准况流量"},{"value": 3, "label":"金额"}]},
+                {"name": "type", "dataType": "uint", "length": 1, "default":1, "unit":"", "cnName":"类型", "selection":[
+                    {"value": 1, "label": "工况流量"},
+                    {"value": 2, "label": "标准况流量"},
+                    {"value": 3, "label": "金额（工况计算）"},
+                    {"value": 4, "label": "金额（标况计算）"}],
+                    "remark": "1：工况流量，2：标况流量，3：金额（工况计算）, 4：金额（标况计算）"},
+
                 {"name": "value", "dataType": "uint", "length": 4, "default":3, "unit":"m³或元", "cnName":"充值量"},
                 {"name": "time", "dataType": "timeStamp", "length": 4, "default":"", "unit":"", "cnName":"充值时间"}
             ]},
@@ -152,7 +158,14 @@
                 {"name": "mainPlanLadder6Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"主计划1阶梯6价格"},
                 {"name": "standbyPlanStartTime", "dataType": "timeStamp", "length": 4, "default":"", "unit":"", "cnName":"备用计划1起始时间"},
                 {"name": "standbyPlanEndTime", "dataType": "timeStamp", "length": 4, "default":"", "unit":"", "cnName":"备用计划1结束时间"},
-                {"name": "standbyPlanSettleType", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"备用计划1结算类型","selection":[{"value": 0, "label":"未用"},{"value": 1, "label":"按月"},{"value": 2, "label":"按季度"},{"value": 3, "label":"按年"} ,{"value": 4, "label":"按开始结束时间"},{"value": 5, "label":"按天数"}]},
+                {"name": "standbyPlanSettleType", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"备用计划1结算类型","selection":[
+                    {"value": 0, "label":"未用"},
+                    {"value": 1, "label":"按月"},
+                    {"value": 2, "label":"按季度"},
+                    {"value": 3, "label":"按年"} ,
+                    {"value": 4, "label":"按开始结束时间"},
+                    {"value": 5, "label":"按天数"}],
+                    "remark": "0：未用，1：按月，2：按季度，3：按年，4：按开始结束时间，5：按天数"},
                 {"name": "standbyPlanSettleParameter", "dataType": "uint", "length": 1, "default":1, "unit":"", "cnName":"备用计划1结算天数"},
                 {"name": "standbyPlanLadder1Flow", "dataType": "uint", "length": 2, "default":1, "unit":"m³", "cnName":"备用计划1阶梯1用量"},
                 {"name": "standbyPlanLadder1Price", "dataType": "uint", "length": 2, "default":10, "unit":"分", "cnName":"备用计划1阶梯1价格"},
@@ -166,39 +179,40 @@
                 {"name": "standbyPlanLadder5Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"备用计划1阶梯5价格"},
                 {"name": "standbyPlanLadder6Flow", "dataType": "uint", "length": 2, "default":0, "unit":"m³", "cnName":"备用计划1阶梯6用量"},
                 {"name": "standbyPlanLadder6Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"备用计划1阶梯6价格"}
-            ]}
+            ]},
+            "resetBilling":{"commandId": "0x1E", "cnName":"计费方式重置", "paras":[]}
         },
         "properties": {
             "chargeHistory":{"commandId": "0x23", "cnName":"充值历史", "paras":[
                 {"name": "record1type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录1充值类型"},
-                {"name": "record1value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录1充值量"},       
+                {"name": "record1value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录1充值量"},
                 {"name": "record1time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录1充值时间"},
                 {"name": "record2type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录2充值类型"},
-                {"name": "record2value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录2充值量"},       
+                {"name": "record2value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录2充值量"},
                 {"name": "record2time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录2充值时间"},
                 {"name": "record3type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录3充值类型"},
-                {"name": "record3value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录3充值量"},       
+                {"name": "record3value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录3充值量"},
                 {"name": "record3time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录3充值时间"},
                 {"name": "record4type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录4充值类型"},
-                {"name": "record4value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录4充值量"},       
+                {"name": "record4value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录4充值量"},
                 {"name": "record4time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录4充值时间"},
                 {"name": "record5type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录5充值类型"},
-                {"name": "record5value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录5充值量"},       
+                {"name": "record5value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录5充值量"},
                 {"name": "record5time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录5充值时间"},
                 {"name": "record6type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录6充值类型"},
-                {"name": "record6value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录6充值量"},       
+                {"name": "record6value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录6充值量"},
                 {"name": "record6time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录6充值时间"},
                 {"name": "record7type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录7充值类型"},
-                {"name": "record7value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录7充值量"},       
+                {"name": "record7value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录7充值量"},
                 {"name": "record7time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录7充值时间"},
                 {"name": "record8type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录8充值类型"},
-                {"name": "record8value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录8充值量"},       
+                {"name": "record8value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录8充值量"},
                 {"name": "record8time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录8充值时间"},
                 {"name": "record9type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录9充值类型"},
-                {"name": "record9value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录9充值量"},       
+                {"name": "record9value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录9充值量"},
                 {"name": "record9time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录9充值时间"},
                 {"name": "record10type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录10充值类型"},
-                {"name": "record10value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录10充值量"},       
+                {"name": "record10value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录10充值量"},
                 {"name": "record10time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录10充值时间"}
             ]},
             "monthUseHistory":{"commandId": "0x24", "cnName":"月用气历史", "paras":[
@@ -254,14 +268,19 @@
             "dayUseHistory":{"commandId": "0x86", "cnName":"日用气历史",  "paras":[
                 {"name": "record1StartTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录1起始时间"},
                 {"name": "record1EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录1结束时间"},
+                {"name": "record1Dosage", "dataType": "uint", "length": 4, "unit":"m³", "expand":3, "cnName":"记录1用量"},
                 {"name": "record2StartTime", "dataType": "timeStamp", "length": 4,"unit":"", "cnName":"记录2起始时间"},
                 {"name": "record2EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录2结束时间"},
+                {"name": "record2Dosage", "dataType": "uint", "length": 4, "unit":"m³", "expand":3, "cnName":"记录2用量"},
                 {"name": "record3StartTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录3起始时间"},
                 {"name": "record3EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录3结束时间"},
+                {"name": "record3Dosage", "dataType": "uint", "length": 4, "unit":"m³", "expand":3, "cnName":"记录3用量"},
                 {"name": "record4StartTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录4起始时间"},
                 {"name": "record4EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录4结束时间"},
+                {"name": "record4Dosage", "dataType": "uint", "length": 4, "unit":"m³", "expand":3, "cnName":"记录4用量"},
                 {"name": "record5StartTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录5起始时间"},
-                {"name": "record5EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录5结束时间"}
+                {"name": "record5EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录5结束时间"},
+                {"name": "record5Dosage", "dataType": "uint", "length": 4, "unit":"m³", "expand":3, "cnName":"记录5用量"}
             ]},
             "pipeEnviroment":{"commandId": "0x87", "cnName":"管道环境参数",  "paras":[
                 {"name": "record1Pressure", "dataType": "int", "length": 2, "unit":"Pa",  "cnName":"记录1压力"},
