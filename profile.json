@@ -1,0 +1,324 @@
+{
+    "device": {
+        "cnName": "设备相关",
+        "methods": {
+            "setConfig":{"commandId": "0x10", "cnName":"设置初始值", "paras":[
+                {"name": "cardinalNumber", "dataType": "int", "length": 4, "default":0, "unit":"", "cnName":"表底数"},
+                {"name": "rotationCoef", "dataType": "uint", "length": 2, "default":1500, "unit":"", "cnName":"回转系数"},
+                {"name": "gear1ToothNum", "dataType": "uint", "length": 1, "default":32, "unit":"", "cnName":"齿轮1齿数"},
+                {"name": "gear2ToothNum", "dataType": "uint", "length": 1, "default":40, "unit":"", "cnName":"齿轮2齿数"},
+                {"name": "address", "dataType": "uint", "length": 7, "default":"001", "unit":"", "cnName":"地址"},
+                {"name": "nominalFlow", "dataType": "uint", "length": 1, "default":25, "unit":"", "cnName":"表型号"},
+                {"name": "host", "dataType": "string", "length": 30, "default":"58.59.64.11", "unit":"", "cnName":"通讯地址"},
+                {"name": "port", "dataType": "string", "length": 10, "default":"8078", "unit":"", "expand": 1, "cnName":"端口"}
+            ]},
+            "readDeviceConfig":{"commandId": "0x20", "cnName":"读取初始值", "paras":[
+                {"name": "fix", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"固定"}
+            ]},
+            "setAttribute":{"commandId": "0x11", "cnName":"设置设备属性", "paras":[
+                {"name": "overPressureThreshold", "dataType": "uint", "length": 2, "default":6000, "unit":"Pa", "expand": 1, "cnName":"超压报警阈值"},
+                {"name": "underPressureThreshold", "dataType": "uint", "length": 2, "default":400, "unit":"Pa", "expand": 1, "cnName":"欠压报警阈值"},
+                {"name": "velocityLowerLimit", "dataType": "uint", "length": 2, "default":50, "unit":"L/h", "cnName":"流速下限"},
+                {"name": "velocityUpperLimit", "dataType": "uint", "length": 2, "default":700, "unit":"L/h", "cnName":"流速上限"},
+                {"name": "constantFlowUpperLimit", "dataType": "uint", "length": 2, "default":100, "unit":"L", "cnName":"恒流超量阈值"},
+                {"name": "remainFlowThreshold", "dataType": "uint", "length": 2, "default":1, "unit":"m³或元", "cnName":"剩余流量报警阈值"},
+                {"name": "safetyCheckPeriod", "dataType": "uint", "length": 1, "default":2, "unit":"年", "cnName":"安检周期"},
+                {"name": "temperatureThreshold", "dataType": "uint", "length": 1, "default":55, "unit":"℃", "expand": 1, "cnName":"温度报警阈值"},
+                {"name": "unusedInterval", "dataType": "uint", "length": 1, "default":2, "unit":"h", "cnName":"未用气报警时长"},
+                {"name": "noOpenInterval", "dataType": "uint", "length": 1, "default":10, "unit":"h", "cnName":"未开阀报警时长"},
+                {"name": "uploadStartHour", "dataType": "uint", "length": 1, "default":16, "unit":"h", "cnName":"上传时段起始时间"},
+                {"name": "uploadEndtHour", "dataType": "uint", "length": 1, "default":17, "unit":"h", "cnName":"上传时段终止时间"},
+                {"name": "ratioCoefThreshold", "dataType": "uint", "length": 1, "default":8, "unit":"%", "cnName":"比例系数报警阈值"}
+            ]},
+            "collectFrequenceSet":{"commandId": "0x19", "cnName":"设置采集时间", "paras":[
+                {"name": "time1Hour", "dataType": "uint", "length": 1, "default":80, "unit":"h", "cnName":"时间1"},
+                {"name": "time2Hour", "dataType": "uint", "length": 1, "default":100, "unit":"h", "cnName":"时间2"},
+                {"name": "time3Hour", "dataType": "uint", "length": 1, "default":120, "unit":"h", "cnName":"时间3"},
+                {"name": "time4Hour", "dataType": "uint", "length": 1, "default":150, "unit":"h", "cnName":"时间4"},
+                {"name": "time5Hour", "dataType": "uint", "length": 1, "default":170, "unit":"h", "cnName":"时间5"}
+            ]},
+            "operateValve":{"commandId": "0xE1", "cnName":"开关阀操作", "paras":[
+                {"name": "isCloseOperation", "dataType": "bool", "length": 1, "default":true, "cnName":"关阀（禁用）"}
+            ]},
+            "safetyCheck":{"commandId": "0xE2", "cnName":"安检", "paras":[
+                {"name": "checkTime", "dataType": "timeStamp", "length": 4, "default":"", "unit":"", "cnName":"安检时间"}
+            ]},
+            "clearSpecifiedError":{"commandId": "0x71", "cnName":"清除故障", "paras":[
+                {"name": "errorNumber", "dataType": "uint", "length": 1, "default":"", "unit":"", "cnName":"故障序号"}
+            ]},
+            "restore":{"commandId": "0x1F", "cnName":"重置", "paras":[
+                {"name": "address", "dataType": "string", "length": 30, "default":"192.168.0.139", "unit":"", "cnName":"地址"},
+                {"name": "port", "dataType": "string", "length": 10, "default":"8077", "unit":"", "cnName":"端口"}
+            ]}
+        },
+        "properties": {
+            "deviceConfig":{"commandId": "0x20", "cnName":"设备配置", "paras":[
+                {"name": "cardinalNumber", "dataType": "int", "length": 4, "unit":"", "cnName":"表底数"},
+                {"name": "rotationCoef", "dataType": "uint", "length": 2, "unit":"", "cnName":"回转系数"},
+                {"name": "gear1ToothNum", "dataType": "uint", "length": 1,  "unit":"", "cnName":"齿轮1齿数"},
+                {"name": "gear2ToothNum", "dataType": "uint", "length": 1, "unit":"", "cnName":"齿轮2齿数"},
+                {"name": "address", "dataType": "uint", "length": 7, "unit":"", "cnName":"地址"},
+                {"name": "nominalFlow", "dataType": "uint", "length": 1, "unit":"", "cnName":"表型号"},
+                {"name": "host", "dataType": "string", "length": 30, "unit":"", "cnName":"通讯地址"},
+                {"name": "port", "dataType": "string", "length": 10, "unit":"", "cnName":"端口"}
+            ]},
+            "alarm":{"commandId": "0x81", "cnName":"故障报警", "paras":[
+                {"name": "type", "dataType": "uint", "length": 1, "unit":"", "cnName":"上传类型"},
+                {"name": "errorNumber", "dataType": "uint", "length": 1, "unit":"", "cnName":"故障序号"},
+                {"name": "errorFlags", "dataType": "uint", "length": 4, "unit":"", "cnName":"当前故障标志位"},
+                {"name": "lastTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"末次时间"},
+                {"name": "occurTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"发生时间"},
+                {"name": "interval", "dataType": "uint", "length": 4, "unit":"s", "cnName":"时长"},
+                {"name": "isUsing", "dataType": "bool", "length": 1, "unit":"", "cnName":"是否用气"},
+                {"name": "isValveClosed", "dataType": "bool", "length": 1, "unit":"", "cnName":"是否关阀"},
+                {"name": "velocity", "dataType": "uint", "length": 2, "unit":"L/h", "cnName":"流速"},
+                {"name": "pipePressure", "dataType": "uint", "length": 4, "unit":"Pa", "expand": 1, "cnName":"管道压力"},
+                {"name": "atmosphericPressure", "dataType": "uint", "length": 4, "unit":"Pa", "expand": 1, "cnName":"大气压力"},
+                {"name": "pipeTemperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"压力温度"},
+                {"name": "indoorTemperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"室内温度"},
+                {"name": "factoryRatio1", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数初始值-1"},
+                {"name": "factoryRatio2", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数初始值-2"},
+                {"name": "factoryRatio3", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数初始值-3"},
+                {"name": "factoryRatio4", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数初始值-4"},
+                {"name": "currentRatio1", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数当前值-1"},
+                {"name": "currentRatio2", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数当前值-2"},
+                {"name": "currentRatio3", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数当前值-3"},
+                {"name": "currentRatio4", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数当前值-4"},
+                {"name": "param", "dataType": "uint", "length": 1, "unit":"", "cnName":"参数"}
+            ]},
+            "deviceStatus":{"commandId": "0x83", "cnName":"设备状态", "paras":[
+                {"name": "pressure", "dataType": "int", "length": 2, "unit":"Pa", "expand": 0, "cnName":"压力"},
+                {"name": "temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"温度"},
+                {"name": "isUsing", "dataType": "bool", "length": 1, "unit":"", "cnName":"是否用气"},
+                {"name": "signalStrength", "dataType": "uint", "length": 1, "unit":"", "cnName":"信号强度"},
+                {"name": "isValveBan", "dataType": "bool", "length": 1, "unit":"", "cnName":"是否禁用"},
+                {"name": "isValveClosed", "dataType": "bool", "length": 1, "unit":"", "cnName":"是否关阀"},
+                {"name": "batteryVoltage", "dataType": "uint", "length": 1, "unit":"V", "expand": 1, "cnName":"电池电压"},
+                {"name": "ratioOffset", "dataType": "uint", "length": 1, "unit":"%", "cnName":"偏转比例"}
+            ]},
+            "valveOperationRecord":{"commandId": "0x84", "cnName":"阀门开关记录", "paras":[
+                {"name": "openTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"开阀时间"},
+                {"name": "closeTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"关阀时间"}
+            ]},
+            "debug":{"commandId": "0x12", "cnName":"当前设备参数", "paras":[
+                {"name": "factoryRatio1", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数初始值-1"},
+                {"name": "factoryRatio2", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数初始值-2"},
+                {"name": "factoryRatio3", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数初始值-3"},
+                {"name": "factoryRatio4", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数初始值-4"},
+                {"name": "currentRatio1", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数当前值-1"},
+                {"name": "currentRatio2", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数当前值-2"},
+                {"name": "currentRatio3", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数当前值-3"},
+                {"name": "currentRatio4", "dataType": "uint", "length": 2, "expand": 2, "unit":"%", "cnName":"比例系数当前值-4"},
+                {"name": "skewing", "dataType": "uint", "length": 1, "unit":"", "cnName":"比例系数反转"},
+                {"name": "offset", "dataType": "uint", "length": 1, "unit":"%", "cnName":"比例系数偏转"},
+                {"name": "period", "dataType": "uint", "length": 2, "unit":"s", "expand": 2, "cnName":"周期"},
+                {"name": "velocity", "dataType": "uint", "length": 2, "unit":"L/h", "cnName":"流速"},
+                {"name": "flow", "dataType": "uint", "length": 4,"unit":"m³", "expand": 3, "cnName":"累计工况流量"},
+                {"name": "hallACounter", "dataType": "uint", "length": 4, "unit":"", "cnName":"磁开关A"},
+                {"name": "hallBCounter", "dataType": "uint", "length": 4, "unit":"", "cnName":"磁开关B"},
+                {"name": "hallVCounter", "dataType": "uint", "length": 4, "unit":"", "cnName":"磁开关V"},
+                {"name": "realTime", "dataType": "uint", "length": 4, "unit":"", "cnName":"系统时间"},
+                {"name": "pressure", "dataType": "int", "length": 4, "unit":"Pa", "expand": 1, "cnName":"压力"},
+                {"name": "temperature", "dataType": "uint", "length": 2, "unit":"℃", "expand": 1, "cnName":"温度"},
+                {"name": "constant", "dataType": "uint", "length": 4, "unit":"","expand": 2, "cnName":"常数"}
+            ]}
+        }
+    },
+
+    "measure": {
+        "cnName": "计量相关",
+        "methods": {
+            "charge":{"commandId": "0x13", "cnName":"充值", "paras":[
+                {"name": "type", "dataType": "uint", "length": 1, "default":1, "unit":"", "cnName":"类型", "selection":[{"value": 1, "label":"工况流量"},{"value": 2, "label":"标准况流量"},{"value": 3, "label":"金额"}]},
+                {"name": "value", "dataType": "uint", "length": 4, "default":3, "unit":"m³或元", "cnName":"充值量"},
+                {"name": "time", "dataType": "timeStamp", "length": 4, "default":"", "unit":"", "cnName":"充值时间"}
+            ]},
+            "setLadderPricingPlan":{"commandId": "0x12", "cnName":"设置阶梯计价", "paras":[
+                {"name": "mainPlanStartTime", "dataType": "timeStamp", "length": 4, "default":"", "unit":"", "cnName":"主计划1起始时间"},
+                {"name": "mainPlanEndTime", "dataType": "timeStamp", "length": 4, "default":"", "unit":"", "cnName":"主计划1结束时间"},
+                {"name": "mainPlanSettleType", "dataType": "uint", "length": 1, "default":2, "unit":"", "cnName":"主计划1结算类型","selection":[{"value": 0, "label":"未用"},{"value": 1, "label":"按月"},{"value": 2, "label":"按季度"},{"value": 3, "label":"按年"} ,{"value": 4, "label":"按开始结束时间"},{"value": 5, "label":"按天数"}]},
+                {"name": "mainPlanSettleParameter", "dataType": "uint", "length": 1, "default":1, "unit":"", "cnName":"主计划1结算天数"},
+                {"name": "mainPlanLadder1Flow", "dataType": "uint", "length": 2, "default":30, "unit":"m³", "cnName":"主计划1阶梯1用量"},
+                {"name": "mainPlanLadder1Price", "dataType": "uint", "length": 2, "default":235, "unit":"分", "cnName":"主计划1阶梯1价格"},
+                {"name": "mainPlanLadder2Flow", "dataType": "uint", "length": 2, "default":50, "unit":"m3", "cnName":"主计划1阶梯2用量"},
+                {"name": "mainPlanLadder2Price", "dataType": "uint", "length": 2, "default":330, "unit":"分", "cnName":"主计划1阶梯2价格"},
+                {"name": "mainPlanLadder3Flow", "dataType": "uint", "length": 2, "default":1000, "unit":"m³", "cnName":"主计划1阶梯3用量"},
+                {"name": "mainPlanLadder3Price", "dataType": "uint", "length": 2, "default":440, "unit":"分", "cnName":"主计划1阶梯3价格"},
+                {"name": "mainPlanLadder4Flow", "dataType": "uint", "length": 2, "default":0, "unit":"m³", "cnName":"主计划1阶梯4用量"},
+                {"name": "mainPlanLadder4Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"主计划1阶梯4价格"},
+                {"name": "mainPlanLadder5Flow", "dataType": "uint", "length": 2, "default":0, "unit":"m³", "cnName":"主计划1阶梯5用量"},
+                {"name": "mainPlanLadder5Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"主计划1阶梯5价格"},
+                {"name": "mainPlanLadder6Flow", "dataType": "uint", "length": 2, "default":0, "unit":"m³", "cnName":"主计划1阶梯6用量"},
+                {"name": "mainPlanLadder6Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"主计划1阶梯6价格"},
+                {"name": "standbyPlanStartTime", "dataType": "timeStamp", "length": 4, "default":"", "unit":"", "cnName":"备用计划1起始时间"},
+                {"name": "standbyPlanEndTime", "dataType": "timeStamp", "length": 4, "default":"", "unit":"", "cnName":"备用计划1结束时间"},
+                {"name": "standbyPlanSettleType", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"备用计划1结算类型","selection":[{"value": 0, "label":"未用"},{"value": 1, "label":"按月"},{"value": 2, "label":"按季度"},{"value": 3, "label":"按年"} ,{"value": 4, "label":"按开始结束时间"},{"value": 5, "label":"按天数"}]},
+                {"name": "standbyPlanSettleParameter", "dataType": "uint", "length": 1, "default":1, "unit":"", "cnName":"备用计划1结算天数"},
+                {"name": "standbyPlanLadder1Flow", "dataType": "uint", "length": 2, "default":1, "unit":"m³", "cnName":"备用计划1阶梯1用量"},
+                {"name": "standbyPlanLadder1Price", "dataType": "uint", "length": 2, "default":10, "unit":"分", "cnName":"备用计划1阶梯1价格"},
+                {"name": "standbyPlanLadder2Flow", "dataType": "uint", "length": 2, "default":0, "unit":"m³", "cnName":"备用计划1阶梯2用量"},
+                {"name": "standbyPlanLadder2Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"备用计划1阶梯2价格"},
+                {"name": "standbyPlanLadder3Flow", "dataType": "uint", "length": 2, "default":0, "unit":"m³", "cnName":"备用计划1阶梯3用量"},
+                {"name": "standbyPlanLadder3Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"备用计划1阶梯3价格"},
+                {"name": "standbyPlanLadder4Flow", "dataType": "uint", "length": 2, "default":0, "unit":"m³", "cnName":"备用计划1阶梯4用量"},
+                {"name": "standbyPlanLadder4Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"备用计划1阶梯4价格"},
+                {"name": "standbyPlanLadder5Flow", "dataType": "uint", "length": 2, "default":0, "unit":"m³", "cnName":"备用计划1阶梯5用量"},
+                {"name": "standbyPlanLadder5Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"备用计划1阶梯5价格"},
+                {"name": "standbyPlanLadder6Flow", "dataType": "uint", "length": 2, "default":0, "unit":"m³", "cnName":"备用计划1阶梯6用量"},
+                {"name": "standbyPlanLadder6Price", "dataType": "uint", "length": 2, "default":0, "unit":"分", "cnName":"备用计划1阶梯6价格"}
+            ]}
+        },
+        "properties": {
+            "chargeHistory":{"commandId": "0x23", "cnName":"充值历史", "paras":[
+                {"name": "record1type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录1充值类型"},
+                {"name": "record1value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录1充值量"},       
+                {"name": "record1time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录1充值时间"},
+                {"name": "record2type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录2充值类型"},
+                {"name": "record2value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录2充值量"},       
+                {"name": "record2time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录2充值时间"},
+                {"name": "record3type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录3充值类型"},
+                {"name": "record3value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录3充值量"},       
+                {"name": "record3time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录3充值时间"},
+                {"name": "record4type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录4充值类型"},
+                {"name": "record4value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录4充值量"},       
+                {"name": "record4time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录4充值时间"},
+                {"name": "record5type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录5充值类型"},
+                {"name": "record5value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录5充值量"},       
+                {"name": "record5time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录5充值时间"},
+                {"name": "record6type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录6充值类型"},
+                {"name": "record6value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录6充值量"},       
+                {"name": "record6time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录6充值时间"},
+                {"name": "record7type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录7充值类型"},
+                {"name": "record7value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录7充值量"},       
+                {"name": "record7time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录7充值时间"},
+                {"name": "record8type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录8充值类型"},
+                {"name": "record8value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录8充值量"},       
+                {"name": "record8time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录8充值时间"},
+                {"name": "record9type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录9充值类型"},
+                {"name": "record9value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录9充值量"},       
+                {"name": "record9time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录9充值时间"},
+                {"name": "record10type", "dataType": "uint", "length": 1, "unit":"", "cnName":"记录10充值类型"},
+                {"name": "record10value", "dataType": "uint", "length": 4, "unit":"", "cnName":"记录10充值量"},       
+                {"name": "record10time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录10充值时间"}
+            ]},
+            "monthUseHistory":{"commandId": "0x24", "cnName":"月用气历史", "paras":[
+                {"name": "record1Time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录1时间"},
+                {"name": "record1cost", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"记录1花费"},
+                {"name": "record1Flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录1工况流量"},
+                {"name": "record1StandardFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录1标况流量"},
+                {"name": "record2Time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录2时间"},
+                {"name": "record2cost", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"记录2花费"},
+                {"name": "record2Flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录2工况流量"},
+                {"name": "record2StandardFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录2标况流量"},
+                {"name": "record3ime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录3时间"},
+                {"name": "record3cost", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"记录3花费"},
+                {"name": "record3Flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录3工况流量"},
+                {"name": "record3StandardFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录3标况流量"},
+                {"name": "record4Time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录4时间"},
+                {"name": "record4cost", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"记录4花费"},
+                {"name": "record4Flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录4工况流量"},
+                {"name": "record4StandardFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录4标况流量"},
+                {"name": "record5Time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录5时间"},
+                {"name": "record5cost", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"记录5花费"},
+                {"name": "record5Flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录5工况流量"},
+                {"name": "record5StandardFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录5标况流量"},
+                {"name": "record6Time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录6时间"},
+                {"name": "record6cost", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"记录6花费"},
+                {"name": "record6Flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录6工况流量"},
+                {"name": "record6StandardFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录6标况流量"},
+                {"name": "record7Time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录7时间"},
+                {"name": "record7cost", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"记录7花费"},
+                {"name": "record7Flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录7工况流量"},
+                {"name": "record7StandardFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录7标况流量"},
+                {"name": "record8Time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录8时间"},
+                {"name": "record8cost", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"记录8花费"},
+                {"name": "record8Flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录8工况流量"},
+                {"name": "record8StandardFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录8标况流量"},
+                {"name": "record9Time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录9时间"},
+                {"name": "record9cost", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"记录9花费"},
+                {"name": "record9Flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录9工况流量"},
+                {"name": "record9StandardFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录19标况流量"},
+                {"name": "record10Time", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录10时间"},
+                {"name": "record10cost", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"记录10花费"},
+                {"name": "record10Flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录10工况流量"},
+                {"name": "record10StandardFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"记录10标况流量"}
+            ]},
+			"measure":{"commandId": "0x85", "cnName":"计量状态",  "paras":[
+                {"name": "flow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"工况流量"},
+                {"name": "remainFlow", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"剩余工况流量"},
+                {"name": "flowStandard", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"标况流量"},
+                {"name": "remianFlowStandard", "dataType": "uint", "length": 4, "unit":"m³", "expand": 3, "cnName":"剩余标况流量"},
+                {"name": "remainMoney", "dataType": "uint", "length": 4, "unit":"元", "expand": 2, "cnName":"剩余金额"},
+                {"name": "currentPrice", "dataType": "uint", "length": 2, "unit":"元", "expand": 2, "cnName":"当前气价"}
+            ]},
+            "dayUseHistory":{"commandId": "0x86", "cnName":"日用气历史",  "paras":[
+                {"name": "record1StartTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录1起始时间"},
+                {"name": "record1EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录1结束时间"},
+                {"name": "record2StartTime", "dataType": "timeStamp", "length": 4,"unit":"", "cnName":"记录2起始时间"},
+                {"name": "record2EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录2结束时间"},
+                {"name": "record3StartTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录3起始时间"},
+                {"name": "record3EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录3结束时间"},
+                {"name": "record4StartTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录4起始时间"},
+                {"name": "record4EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录4结束时间"},
+                {"name": "record5StartTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录5起始时间"},
+                {"name": "record5EndTime", "dataType": "timeStamp", "length": 4, "unit":"", "cnName":"记录5结束时间"}
+            ]},
+            "pipeEnviroment":{"commandId": "0x87", "cnName":"管道环境参数",  "paras":[
+                {"name": "record1Pressure", "dataType": "int", "length": 2, "unit":"Pa",  "cnName":"记录1压力"},
+                {"name": "record1Temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"记录1温度"},
+                {"name": "record1HourMin", "dataType": "uint", "length": 1,"unit":"", "cnName":"记录1时间"},
+                {"name": "record2Pressure", "dataType": "int", "length": 2, "unit":"Pa", "cnName":"记录2压力"},
+                {"name": "record2Temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"记录2温度"},
+                {"name": "record2HourMin", "dataType": "uint", "length": 1,"unit":"", "cnName":"记录2时间"},
+                {"name": "record3Pressure", "dataType": "int", "length": 2, "unit":"Pa", "cnName":"记录3压力"},
+                {"name": "record3Temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"记录3温度"},
+                {"name": "record3HourMin", "dataType": "uint", "length": 1,"unit":"", "cnName":"记录3时间"},
+                {"name": "record4Pressure", "dataType": "int", "length": 2, "unit":"Pa","cnName":"记录4压力"},
+                {"name": "record4Temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"记录4温度"},
+                {"name": "record4HourMin", "dataType": "uint", "length": 1,"unit":"", "cnName":"记录4时间"},
+                {"name": "record5Pressure", "dataType": "int", "length": 2, "unit":"Pa", "cnName":"记录5压力"},
+                {"name": "record5Temperature", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"记录5温度"},
+                {"name": "record5HourMin", "dataType": "uint", "length": 1,"unit":"", "cnName":"记录5时间"}
+            ]}
+        }        
+    },
+
+    "extension": {
+        "cnName": "扩展功能",
+        "methods": {
+            "setUsePeriod":{"commandId": "0x15", "cnName":"设置用气时段", "paras":[
+                {"name": "timePeriod1StartTime", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"用气时段1起始"},
+                {"name": "timePeriod1EndTime", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"用气时段1终止"},
+                {"name": "timePeriod2StartTime", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"用气时段2起始"},
+                {"name": "timePeriod2EndTime", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"用气时段2终止"},
+                {"name": "timePeriod3StartTime", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"用气时段3起始"},
+                {"name": "timePeriod3EndTime", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"用气时段3终止"}
+            ]},
+            "equipmentRegiste":{"commandId": "0x17", "cnName":"设备注册", "paras":[
+                {"name": "equipment1Type", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"注册设备1类型"},
+                {"name": "equipment1Velocity", "dataType": "uint", "length": 2, "default":0, "unit":"L/h", "cnName":"注册设备1流速"},
+                {"name": "equipment2Type", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"注册设备2类型"},
+                {"name": "equipment2Velocity", "dataType": "uint", "length": 2, "default":0, "unit":"L/h", "cnName":"注册设备2流速"},
+                {"name": "equipment3Type", "dataType": "uint", "length": 1, "default":0, "unit":"", "cnName":"注册设备3类型"},
+                {"name": "equipment3Velocity", "dataType": "uint", "length": 2, "default":0, "unit":"L/h", "cnName":"注册设备3流速"}
+            ]},
+            "operateCharacteristic":{"commandId": "0x18", "cnName":"特征常数操作", "paras":[
+                {"name": "isSet", "dataType": "bool", "length": 1, "default":false, "unit":"", "cnName":"是否为标定"}
+            ]}
+        },
+        "properties": {
+            "characteristic":{"commandId": "0x28", "cnName":"设备特征常数", "paras":[
+                {"name": "constantInit", "dataType": "uint", "length": 4,"unit":"", "expand": 0, "cnName":"标定特征常数"},
+                {"name": "pressureInit", "dataType": "int", "length": 4,"unit":"Pa", "expand": 1, "cnName":"管道压力"},
+                {"name": "velocityInit", "dataType": "uint", "length": 2,"unit":"L/h", "expand": 0, "cnName":"流速"},
+                {"name": "temperatureInit", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"温度"},
+                {"name": "startTimeInit", "dataType": "timeStamp", "length": 4, "unit":"", "expand": 0, "cnName":"采集时间"},
+                {"name": "constantCurrent", "dataType": "uint", "length": 4,"unit":"", "expand": 0, "cnName":"当前特征常数"},
+                {"name": "pressureCurrent", "dataType": "int", "length": 4,"unit":"Pa", "expand": 1, "cnName":"管道压力"},
+                {"name": "velocityCurrent", "dataType": "uint", "length": 2,"unit":"L/h", "expand": 0, "cnName":"流速"},
+                {"name": "temperatureCurrent", "dataType": "int", "length": 2, "unit":"℃", "expand": 1, "cnName":"温度"},
+                {"name": "startTimeCurrent", "dataType": "timeStamp", "length": 4, "unit":"", "expand": 0, "cnName":"采集时间"}
+            ]}
+        }
+    }
+}

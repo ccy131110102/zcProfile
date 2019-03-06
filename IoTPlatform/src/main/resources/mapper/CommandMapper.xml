@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.zhuocheng.mapper.CommandMapper">
+	<resultMap id="commandMap" type="com.zhuocheng.model.Command">
+		<id column="id" property="id" />
+		<result column="command_id" property="commandId" />
+		<result column="command_type" property="commandType" />
+		<result column="command_content" property="commandContent" />
+		<result column="command_state" property="commandState" />
+		<result column="command_device_id" property="commandDeviceId" />
+		<result column="command_direction" property="commandDirection" />
+		<result column="command_timestamp" property="commandTimestamp" />
+		<result column="command_app_id" property="commandAppId" />
+		<result column="command_profile_id" property="commandProfileId" />
+		<result column="command_service_id" property="commandServiceId" />
+		<result column="command_service_type" property="commandServiceType" />
+	</resultMap>
+
+
+	<select id="getAllCommandsInfo" resultMap="commandMap">
+		select * from command
+	</select>
+
+	<select id="getAllCommandsInfoByDeviceId" resultMap="commandMap">
+		select * from command where command_device_id = #{0}
+	</select>
+
+	<insert id="insertOneCommandInfo" parameterType="com.zhuocheng.model.Command" useGeneratedKeys="true" keyProperty="commandId">
+		INSERT INTO
+		command
+		(command_type, command_content, command_state, command_device_id, command_direction, command_app_id, command_profile_id, command_service_Id, command_service_type)
+		VALUES
+		(#{commandType}, #{commandContent}, #{commandState}, #{commandDeviceId},
+		#{commandDirection}, #{commandAppId}, #{commandProfileId}, #{commandServiceId}, #{commandServiceType})
+	</insert>
+
+	<update id="updateCommandState" parameterType="com.zhuocheng.model.Command">
+		UPDATE
+		command
+		SET
+		command_state = #{commandState}
+		WHERE
+		command_id = #{commandId}
+	</update>
+	
+	<select id="selectCommand" resultMap="commandMap">
+		select * from command 
+		where command_direction = #{commandDirection} 
+		and command_app_id = #{appId} 
+		and command_profile_id = #{profileId}
+		<if test='serviceId!=null '>
+			and command_service_id = #{serviceId}
+		</if>
+		<if test='serviceType!=null'>
+			and command_service_type = #{serviceType}
+		</if>
+		<if test='deviceId!=null'>
+			and command_device_id = #{deviceId}
+		</if>
+		<if test='startDate!=null and endDate!=null'>
+			and command_timestamp <![CDATA[>= ]]> #{startDate}
+			and command_timestamp <![CDATA[<= ]]> #{endDate}
+		</if>
+		order by command_id desc
+		<if test='isPage.equals(true)'>
+			limit #{startIndex},#{size}
+		</if>
+		
+	</select>
+	
+	<select id="selectCommandCount" resultType="java.lang.Integer">
+		select count(*) from command 
+		where command_direction = #{commandDirection} 
+		and command_app_id = #{appId} 
+		and command_profile_id = #{profileId}
+		<if test='serviceId!=null '>
+			and command_service_id = #{serviceId}
+		</if>
+		<if test='serviceType!=null'>
+			and command_service_type = #{serviceType}
+		</if>
+		<if test='deviceId!=null'>
+			and command_device_id = #{deviceId}
+		</if>
+		<if test='startDate!=null and endDate!=null'>
+			and command_timestamp <![CDATA[>= ]]> #{startDate}
+			and command_timestamp <![CDATA[<= ]]> #{endDate}
+		</if>
+	</select>
+</mapper>
