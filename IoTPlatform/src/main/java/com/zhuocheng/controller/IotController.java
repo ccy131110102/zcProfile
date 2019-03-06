@@ -42,38 +42,6 @@ public class IotController {
 	private CommandMapper commandMapper;
 
 	/**
-	 * @Description: 导入profile结构体
-	 */
-	// @RequestMapping(value = "/profileRegister", method = RequestMethod.POST)
-	// public void profileRegister(@RequestParam(value = "construction") String
-	// construction, @RequestParam(value = "profileId") String profileId){
-	// Jedis je = jedisPool.getResource();
-	//
-	// je.hset("PROFILE", profileId, construction);
-
-	// je.close();
-
-	// System.out.println(JSONObject.toJSONString(jo.get("methods")));
-	// }
-
-	/**
-	 * @Description: 导入app与profile关系结构体
-	 */
-	// @RequestMapping(value = "/appProfileRegister", method =
-	// RequestMethod.GET)
-	// public void appProfileRegister(@RequestParam(value = "construction")
-	// String construction, @RequestParam(value = "profileId") String
-	// profileId){
-	// Jedis je = jedisPool.getResource();
-	//
-	// je.set(Constant.APP_SAVEKEY, construction);
-	//
-	// je.close();
-
-	// System.out.println(JSONObject.toJSONString(jo.get("methods")));
-	// }
-
-	/**
 	 * @Description: 根据访问的uri查询上传或下发信息
 	 */
 	@RequestMapping(value = { "/selectCommand",
