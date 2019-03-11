@@ -2,6 +2,7 @@ package com.zhuocheng.controller;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -21,6 +22,7 @@ import com.zhuocheng.constant.Constant;
 import com.zhuocheng.exception.HttpRequestException;
 import com.zhuocheng.exception.ProfileHandleException;
 import com.zhuocheng.handler.AppInfoHandler;
+import com.zhuocheng.handler.CacheHandler;
 import com.zhuocheng.handler.MessageStorageHandler;
 import com.zhuocheng.handler.ProfileHandler;
 import com.zhuocheng.handler.ServiceInfoHandler;
@@ -51,6 +53,11 @@ public class ServiceController {
 	 */
 	@PostConstruct
 	public void serviceSubscribe() {
+		// 用于服务中缓存当前最新的profile结构
+		Map localCacheMap = new LinkedHashMap();
+		Map localMethodCacheMap = new LinkedHashMap();
+		Map localPropertiesCacheMap = new LinkedHashMap();
+		
 		// 第一次生成实例，初始化对象
 		MessageStorageHandler.init(jedisPool, CommandMapper);
 		ServiceInfoHandler.init(jedisPool);
@@ -59,16 +66,20 @@ public class ServiceController {
 		SubscribePublish.getInstance().clearSubcriber();
 		Jedis jedis = jedisPool.getResource();
 		Map profileMap = (Map) jedis.hgetAll(Constant.CONSTRUCTION_SAVEKEY);
+		Map deviceMap = (Map) jedis.hgetAll(Constant.CONSTRUCTION_DEVICE_SAVEKEY);
+		Map appMap = (Map) JSONObject.parse(jedis.get(Constant.APP_SAVEKEY), Feature.OrderedField);
 		// jedis.close();
 
 		// 如果当前系统中没有任何的profile结构体，则抛出异常
 		if (profileMap == null) {
+			logger.error("没有注册任何profile");
 			// 写错误日志
 			jedisPool.returnResource(jedis);
 			return;
 		}
 
-		// 获取profile结构体，按method向消息中心注册等待消息发布
+		// 获取profile结构体，按method向消息中心注册等待消息发布同时将profile信息缓存到服务本地
+		// 如果远端profile被更新则需要调用此方法重新加载profile
 		Iterator<String> profileIt = profileMap.keySet().iterator();
 		while (profileIt.hasNext()) {
 			String profileKey = profileIt.next();
@@ -85,6 +96,15 @@ public class ServiceController {
 
 					while (methodsKeyIt.hasNext()) {
 						String currentMethodsKey = methodsKeyIt.next();
+						
+						Map tempMap = (Map) currentMethodsMap.get(currentMethodsKey);
+						String currentfCommand = (String) tempMap.get(Constant.PARAS_COMMAND);
+						tempMap.put(Constant.METHOD_NAME, currentMethodsKey);
+						tempMap.put(Constant.PROFILE_LISTKEY, currentKey);
+						tempMap.put(Constant.PROFILE_KEY, profileKey);
+						
+						localMethodCacheMap.put(currentfCommand, tempMap);
+						
 						ISubcriber<String> subcriber = new SubcriberImpl<String>(profileKey, currentMethodsKey,
 								currentKey, Constant.PUBLISH_TYPE_METHOD);
 						SubscribePublish.getInstance().subcribe(subcriber);
@@ -97,6 +117,15 @@ public class ServiceController {
 
 					while (propertiesKeyIt.hasNext()) {
 						String currentPropertiesKey = propertiesKeyIt.next();
+						
+						Map tempMap = (Map) currentPropertiessMap.get(currentPropertiesKey);
+						String currentCommand = (String) tempMap.get(Constant.PROPERTIES_COMMAND);
+						tempMap.put(Constant.METHOD_NAME, currentPropertiesKey);
+						tempMap.put(Constant.PROFILE_LISTKEY, currentKey);
+						tempMap.put(Constant.PROFILE_KEY, profileKey);
+						
+						localPropertiesCacheMap.put(currentCommand, tempMap);
+						
 						ISubcriber<String> subcriber = new SubcriberImpl<String>(profileKey, currentPropertiesKey,
 								currentKey, Constant.PUBLISH_TYPE_PROPERTIES);
 						SubscribePublish.getInstance().subcribe(subcriber);
@@ -104,6 +133,8 @@ public class ServiceController {
 				}
 			}
 		}
+		
+		CacheHandler.init(localMethodCacheMap, localPropertiesCacheMap, deviceMap, appMap);
 		jedisPool.returnResource(jedis);
 	}
 

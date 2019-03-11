@@ -27,6 +27,9 @@ public class Constant {
 	public static final String CONSTRUCTION_DATAKEY = "data";
 	public static final String CONSTRUCTION_MESSAGEIDKEY = "commandId";
 	
+	public static final String CONSTRUCTION_DEVICE_SAVEKEY = "DEVICE";
+	public static final String CONSTRUCTION_APP_SAVEKEY = "APP";
+	
 	public static final String APP_SAVEKEY = "APP";
 	public static final String SERVERS_SAVEKEY = "SERVERS";
 	public static final String SERVERS_CALLBACK = "callBackURL";
@@ -38,12 +41,20 @@ public class Constant {
 	public static final String PARAS_PROPERTYNAME = "name";
 	public static final String PARAS_DATATYPE = "dataType";
 	public static final String PARAS_LENGTH = "length";
+	public static final String PARAS_COMMAND = "commandId";
+	public static final String METHOD_NAME = "name";
+	public static final String METHOD_CNNAME = "cnName";
+	
+	public static final String PROFILE_LISTKEY = "listKey";
+	public static final String PROFILE_KEY = "profileKey";
 	
 	public static final String PROPERTIES_PARASKEY = "paras";
 	public static final String PROPERTIES_PROPERTYNAME = "name";
 	public static final String PROPERTIES_DATATYPE = "dataType";
 	public static final String PROPERTIES_LENGTH = "length";
 	public static final String PROPERTIES_COMMAND = "commandId";
+	public static final String PROPERTIES_NAME = "name";
+	public static final String PROPERTIES_CNNAME = "cnName";
 	
 	public static final String PROFILE_ID = "profileId";
 	public static final String SERVICE_ID = "serviceId";

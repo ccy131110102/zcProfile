@@ -30,6 +30,7 @@ public class PublisherImpl<M> implements IPublisher<M> {
 			final String subcriberId, final String type, final String serviceId, final String commandType) {
 		cachedThreadPool.execute(new Runnable() {
 
+			@Override
 			public void run() {
 				try {
 					subscribePublish.publish("", message, isInstantMsg, subcriberType, subcriberId, type, serviceId, commandType);

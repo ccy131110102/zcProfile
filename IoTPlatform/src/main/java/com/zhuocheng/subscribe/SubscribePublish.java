@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
@@ -30,6 +32,8 @@ public class SubscribePublish<M> {
 	private List<ISubcriber> subcribers = new ArrayList<ISubcriber>();
 
 	private Logger logger = Logger.getLogger(SubscribePublish.class);
+	
+	private ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
 	/**
 	 * @Description:构造方法
@@ -66,14 +70,23 @@ public class SubscribePublish<M> {
 	 * @throws ProfileHandleException 
 	 */
 	public String publish(String profileId, M message, boolean isInstantMsg, String subcriberType, String subcriberId, String type, String serviceId, String commandType) throws HttpRequestException, ProfileHandleException {
-		if (isInstantMsg) {
-			return update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
-		}
+		cachedThreadPool.execute(new Runnable() {
 
-		Msg<M> m = new Msg<M>(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
-		if (queue.offer(m)) {
-			update();
-		}
+			@Override
+			public void run() {
+				try {
+					update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
+				} catch (HttpRequestException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					logger.error(e.getStackTrace());
+				} catch (ProfileHandleException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					logger.error(e.getStackTrace());
+				}
+			}
+		});
 		
 		return "";
 	}

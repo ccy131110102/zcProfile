@@ -2,6 +2,7 @@ package com.zhuocheng.handler;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONArray;
@@ -168,68 +169,37 @@ public class ProfileHandler {
 	 * @Description: 根据commandId获取解码profile结构体
 	 */
 	public Map getDecodeProfileByMessageId(String commandId) throws ProfileHandleException {
-		Map result = null;
+		Map profilePropertiesMap = (Map) CacheHandler.getInstance().getLocalPropertiesCache().get(commandId);
+		Map appsMap =  CacheHandler.getInstance().getLocalAppCache();
+		
+		String methodName = (String) profilePropertiesMap.get(Constant.METHOD_NAME);
+		String listKey = (String) profilePropertiesMap.get(Constant.PROFILE_LISTKEY);
+		String profileKey = (String) profilePropertiesMap.get(Constant.PROFILE_KEY);
+		String commandName = (String) profilePropertiesMap.get(Constant.PROPERTIES_NAME);
+		
+		String appId = "DEFAULT";
 
-		Jedis jedis = jedisPool.getResource();
-		Map profileMap = (Map) jedis.hgetAll(Constant.CONSTRUCTION_SAVEKEY);
+		Iterator<String> appIt = appsMap.keySet().iterator();
+		while (appIt.hasNext()) {
+			String appKey = appIt.next();
+			JSONArray profileIdList = (JSONArray) appsMap.get(appKey);
 
-		// 如果当前系统中没有任何的profile结构体，则抛出异常
-		if (profileMap == null) {
-			throw new ProfileHandleException(Constant.CONSTRUCTION_OP_ERROR_NOPROFILE_MSG,
-					Constant.CONSTRUCTION_OP_ERROR_NOPROFILE_CODE);
-		}
-
-		Iterator<String> profileIt = profileMap.keySet().iterator();
-		while (profileIt.hasNext()) {
-			String profileKey = profileIt.next();
-			Map profile = (Map) JSONObject.parse((String) profileMap.get(profileKey), Feature.OrderedField);
-
-			Iterator<String> serverIt = profile.keySet().iterator();
-			while (serverIt.hasNext()) {
-				String currentKey = serverIt.next();
-
-				Map currentServerMap = (Map) profile.get(currentKey);
-				Map currentMethodsMap = (Map) currentServerMap.get("properties");
-				if (currentMethodsMap != null) {
-					Iterator<String> methodsKeyIt = currentMethodsMap.keySet().iterator();
-
-					while (methodsKeyIt.hasNext()) {
-						String currentMethodsKey = methodsKeyIt.next();
-						Map methodMap = (Map) currentMethodsMap.get(currentMethodsKey);
-
-						if (methodMap != null && methodMap.get("commandId").equals(commandId)) {
-							Map tempMethod = new HashMap();
-							Map tempProfile = new HashMap();
-							Map tempApp = new HashMap();
-							Map tempResult = new HashMap();
-							tempMethod.put(currentMethodsKey, methodMap);
-							tempProfile.put(currentKey, tempMethod);
-							tempApp.put(profileKey, tempProfile);
-
-							Map appProfileMap = (Map) JSONObject.parse(jedis.get(Constant.APP_SAVEKEY), Feature.OrderedField);
-							String appId = "DEFAULT";
-
-							Iterator<String> appIt = appProfileMap.keySet().iterator();
-							while (appIt.hasNext()) {
-								String appKey = appIt.next();
-								JSONArray profileIdList = (JSONArray) appProfileMap.get(appKey);
-
-								if (profileIdList.contains(profileKey)) {
-									appId = appKey;
-								}
-							}
-
-							tempResult.put(appId, tempApp);
-							result = tempResult;
-							break;
-						}
-					}
-				}
+			if (profileIdList.contains(profileKey)) {
+				appId = appKey;
 			}
 		}
-
-		jedisPool.returnResource(jedis);
-		return result;
+		
+		Map tempListPropertyMap = new LinkedHashMap();
+		tempListPropertyMap.put(methodName, profilePropertiesMap);
+		Map tempListProfileMap = new LinkedHashMap();
+		tempListProfileMap.put(listKey, tempListPropertyMap);
+		Map tempProfileMap = new LinkedHashMap();
+		tempProfileMap.put(profileKey, tempListProfileMap);
+		Map tempAppMap = new LinkedHashMap();
+		tempAppMap.put(appId, tempProfileMap);
+		
+		System.out.println("-------------" + tempAppMap);
+		return tempAppMap;
 	}
 
 	/**
@@ -295,8 +265,7 @@ public class ProfileHandler {
 	public String getAppIdByProfileId(String ProfileId) throws ProfileHandleException {
 		String appId = null;
 
-		Jedis jedis = jedisPool.getResource();
-		Map appMap = (Map) JSONObject.parse(jedis.get(Constant.APP_SAVEKEY), Feature.OrderedField);
+		Map appMap = CacheHandler.getInstance().getLocalAppCache();
 
 		Iterator appIt = appMap.keySet().iterator();
 		while (appIt.hasNext()) {
@@ -313,7 +282,6 @@ public class ProfileHandler {
 			}
 		}
 
-		jedisPool.returnResource(jedis);
 		return appId;
 
 	}

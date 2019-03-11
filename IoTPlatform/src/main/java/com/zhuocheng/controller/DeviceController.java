@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
@@ -51,6 +50,8 @@ public class DeviceController {
 	private JedisPool jedisPool;
 	@Autowired
 	private CommandMapper commandMapper;
+	@Autowired
+	private ServiceController serviceController;
 	private Logger logger = Logger.getLogger(DeviceController.class);
 	private HashSet<String> deviceIdSet = new HashSet<String>();
 
@@ -125,18 +126,18 @@ public class DeviceController {
 
 			while (deviceIdIt.hasNext()) {
 				String dId = (String) deviceIdIt.next();
-				
+
 				if (dId.contains(patten)) {
-					if(deviceId != null && !deviceId.equals("") && !dId.equals(patten)){
+					if (deviceId != null && !deviceId.equals("") && !dId.equals(patten)) {
 						continue;
 					}
-					
-					if(deviceInfo != null){
+
+					if (deviceInfo != null) {
 						Map deviceInfoMap = (Map) JSONObject.parse(deviceMap.get(dId), Feature.OrderedField);
-						if(deviceInfo.equals(deviceInfoMap.get("deviceInfo"))){
+						if (deviceInfo.equals(deviceInfoMap.get("deviceInfo"))) {
 							deviceIdList.add(dId);
 						}
-					}else{
+					} else {
 						deviceIdList.add(dId);
 					}
 				}
@@ -147,12 +148,12 @@ public class DeviceController {
 			if (!isPage) {
 				startIndex = 0;
 				endIndex = deviceIdList.size();
-			}else{
-				if(startIndex >= deviceIdList.size() && number != 0){
+			} else {
+				if (startIndex >= deviceIdList.size() && number != 0) {
 					errorCode = Constant.PAGE_ERRORCODE;
 					errorInfo = Constant.PAGE_ERRORMSG;
 				}
-				if(endIndex >= deviceIdList.size()){
+				if (endIndex >= deviceIdList.size()) {
 					endIndex = number;
 				}
 			}
@@ -173,12 +174,12 @@ public class DeviceController {
 			bodyMap.put("number", number);
 			bodyMap.put("selectList", deviceList);
 			resultMap.put("body", bodyMap);
-			
+
 			jedisPool.returnResource(jedis);
 		}
 		resultMap.put(Constant.CALLBACK_ERRORCODE, errorCode);
 		resultMap.put(Constant.CALLBACK_ERRORINFO, errorInfo);
-		
+
 		return JSONObject.toJSONString(resultMap);
 	}
 
@@ -213,10 +214,11 @@ public class DeviceController {
 			deviceId = (String) paramsMap.get("deviceId");
 			deviceControl = (String) paramsMap.get("control");
 
-			if(appId == null || appId.equals("") || deviceInfo == null || deviceInfo.equals("") || deviceControl == null || deviceControl.equals("")){
+			if (appId == null || appId.equals("") || deviceInfo == null || deviceInfo.equals("")
+					|| deviceControl == null || deviceControl.equals("")) {
 				errorCode = Constant.JSON_ERRORCODE;
 				errorInfo = Constant.JSON_ERRORMSG;
-			}else{
+			} else {
 				deviceInfoMap.put("appId", appId);
 				deviceInfoMap.put("profileId", profileId);
 				deviceInfoMap.put("deviceInfo", deviceInfo);
@@ -234,7 +236,7 @@ public class DeviceController {
 					this.loadDeviceIdList();
 				}
 			}
-			
+
 		} catch (Exception e) {
 			// TODO: handle exception
 			logger.error(e.getMessage());
@@ -249,6 +251,7 @@ public class DeviceController {
 		resultMap.put(Constant.CALLBACK_ERRORINFO, errorInfo);
 		resultMap.put(Constant.CALLBACK_BODY, resultBodyMap);
 
+		serviceController.serviceSubscribe();
 		return JSONObject.toJSONString(resultMap);
 	}
 
@@ -283,7 +286,8 @@ public class DeviceController {
 		// response.setHeader("Access-Control-Allow-Headers", "Content-Type");
 		// response.setHeader("Access-Control-Allow-Credentials","true");
 		// response.setHeader("Cache-Control", "no-cache");
-		// response.setHeader("Content-Type", "text/plain;application/json;charset=UTF-8");
+		// response.setHeader("Content-Type",
+		// "text/plain;application/json;charset=UTF-8");
 		// response.setHeader("Transfer-Encoding", "chunked");
 
 		// 用于保存返回报文
@@ -412,4 +416,6 @@ public class DeviceController {
 		}
 
 	}
+
+	
 }

@@ -21,6 +21,7 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd">
 
     <util:properties id="config" location="classpath:spring-config.properties"/>
+    <util:properties id="nettyConfig" location="classpath:netty.properties"/>
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="#{config.driver}"/>
         <property name="url" value="#{config.url}"/>

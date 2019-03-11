@@ -62,14 +62,12 @@ public class DeviceInfoHandler {
 	 * @param deviceId 设备唯一识别码
 	 */
 	public Map getDeviceInfoByDeviceKey(String deviceId){
-		Jedis jedis = jedisPool.getResource();
-		String deviceInfo = jedis.hget("DEVICE", deviceId);
+		String deviceInfo = JSONObject.toJSONString(CacheHandler.getInstance().getLocalDeviceCache());
 		
 		if(deviceInfo == null){
 			return null;
 		}
 		
-		jedisPool.returnResource(jedis);
 		return (Map) JSONObject.parse(deviceInfo, Feature.OrderedField);
 	}
 	
@@ -78,11 +76,9 @@ public class DeviceInfoHandler {
 	 * @param deviceId
 	 */
 	public Map getDeviceInfoByDeviceId(String deviceId){
-		Jedis jedis = jedisPool.getResource();
-		Map deviceInfoMap = jedis.hgetAll("DEVICE");
+		Map deviceInfoMap = CacheHandler.getInstance().getLocalDeviceCache();
 		
 		if(deviceInfoMap == null){
-			jedisPool.returnResource(jedis);
 			return null;
 		}
 		
@@ -94,12 +90,10 @@ public class DeviceInfoHandler {
 			Map deviceInfo = (Map) JSONObject.parse((String)deviceInfoMap.get(deviceKey));
 			
 			if(deviceInfo.get(Constant.DEVICEINFO_DEVICEID).equals(deviceId)){
-				jedisPool.returnResource(jedis);
 				return deviceInfo;
 			}
 		}
 		
-		jedisPool.returnResource(jedis);
 		return null;
 	}
 	

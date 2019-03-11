@@ -141,7 +141,7 @@ public class MessageStorageHandler {
 	}
 
 	/**
-	 * @Description: 判断packetId是否改变，如果改变则丢弃队列首元素，如果未改变则不丢弃
+	 * @Description: 判断packetId是否改变，如果改变则丢弃队列首元素，如果未改变则不丢弃，如果还有暂存数据返回true否则返回false
 	 */
 	public boolean isPacketIdChanged(String messageId, String appId, String profileId, String deviceId,
 			String saveType) {
@@ -150,8 +150,9 @@ public class MessageStorageHandler {
 
 		byte[] message = jedis.hget(generateKey(appId, profileId, deviceId).getBytes(), saveType.getBytes());
 
+		Queue queue = null;
 		if (message != null) {
-			Queue queue = (LinkedBlockingQueue) SerializeUtil.unserialize(message);
+			queue = (LinkedBlockingQueue) SerializeUtil.unserialize(message);
 			result = String.valueOf(queue.peek());
 
 			if (result != null && !queue.isEmpty()) {
@@ -195,7 +196,7 @@ public class MessageStorageHandler {
 
 		jedisPool.returnResource(jedis);
 
-		return true;
+		return !queue.isEmpty();
 	}
 
 	/**

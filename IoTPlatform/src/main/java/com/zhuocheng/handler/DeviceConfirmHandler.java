@@ -42,7 +42,7 @@ public class DeviceConfirmHandler {
 		// 延迟加载
 		if (instance == null) {
 			// 同步锁
-			synchronized (ProfileHandler.class) {
+			synchronized (DeviceConfirmHandler.class) {
 				if (instance == null)
 					instance = new DeviceConfirmHandler();
 			}
