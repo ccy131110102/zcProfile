@@ -62,13 +62,13 @@ public class DeviceInfoHandler {
 	 * @param deviceId 设备唯一识别码
 	 */
 	public Map getDeviceInfoByDeviceKey(String deviceId){
-		String deviceInfo = JSONObject.toJSONString(CacheHandler.getInstance().getLocalDeviceCache());
+		Map deviceInfo = (Map) JSONObject.parse((String)CacheHandler.getInstance().getLocalDeviceCache().get(deviceId));
 		
 		if(deviceInfo == null){
 			return null;
 		}
 		
-		return (Map) JSONObject.parse(deviceInfo, Feature.OrderedField);
+		return deviceInfo;
 	}
 	
 	/**

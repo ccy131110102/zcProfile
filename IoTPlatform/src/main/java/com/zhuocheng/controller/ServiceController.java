@@ -443,5 +443,15 @@ public class ServiceController {
 	public void dataManageRemoveSubscribe(@RequestParam(value = "profile") String profile) {
 
 	}
+	
+	/**
+	 * @Description: 移除已订阅平台数据管理
+	 */
+	@RequestMapping(value = "/test", method = RequestMethod.GET)
+	@ResponseBody
+	public String testL() {
+		String v = "FirstFlight　　Mr.Johnsonhadneverbeenupinanaerophanebeforeandhehadreadalotaboutairaccidents,soonedaywhenafriendofferedtotakehimforarideinhisownsmallphane,Mr.Johnsonwasveryworriedaboutaccepting.Finally,however,hisfriendpersuadedhimthatitwasverysafe,andMr.Johnsonboardedtheplane.　　Hisfriendstartedtheengineandbegantotaxiontotherunwayoftheairport.Mr.Johnsonhadheardthatthemostdangerouspartofaflightwerethetake-offandthelanding,sohewasextremelyfrightenedandclosedhiseyes.　　Afteraminuteortwoheopenedthemagain,lookedoutofthewindowoftheplane,andsaidtohisfriend,Lookatthosepeopledownthere.Theylookassmallasants,don'tthey?　　Thoseareants,answeredhisfriend.We'restillontheground.";
+		return v + v + v + v;
+	}
 
 }
