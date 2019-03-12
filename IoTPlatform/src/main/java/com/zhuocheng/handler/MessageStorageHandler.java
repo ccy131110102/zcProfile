@@ -65,6 +65,10 @@ public class MessageStorageHandler {
 		Jedis jedis = jedisPool.getResource();
 		Queue queue = null;
 
+		// 获取读写锁
+		while (!CacheHandler.getInstance().getDownLock(generateKey(appId, profileId, deviceId))) {
+
+		}
 		if (SerializeUtil.unserialize(retireMessageQueue(appId, profileId, deviceId, saveType)) == null) {
 			queue = new LinkedBlockingQueue();
 		} else {
@@ -88,12 +92,14 @@ public class MessageStorageHandler {
 		System.out.println(message);
 		Map messageMap = ((Map) JSONObject.parse(message, Feature.OrderedField));
 		messageMap.put("primaryId", command.getCommandId());
+
 		if (state.equals("0") && !saveType.equals(Constant.COMMAND_SAVETYPE_UP)) {
 			queue.offer(JSONObject.toJSONString(messageMap));
 
 			jedis.hset(generateKey(appId, profileId, deviceId).getBytes(), saveType.getBytes(),
 					SerializeUtil.serialize(queue));
 		}
+		CacheHandler.getInstance().returnDownLock(generateKey(appId, profileId, deviceId));
 
 		jedisPool.returnResource(jedis);
 		return String.valueOf(command.getCommandId());
@@ -105,6 +111,11 @@ public class MessageStorageHandler {
 	public String retireMessage(String messageId, String appId, String profileId, String deviceId, String saveType) {
 		Jedis jedis = jedisPool.getResource();
 		String result = null;
+
+		// 取读写锁
+		while (!CacheHandler.getInstance().getDownLock(generateKey(appId, profileId, deviceId))) {
+
+		}
 
 		byte[] message = jedis.hget(generateKey(appId, profileId, deviceId).getBytes(), saveType.getBytes());
 
@@ -126,15 +137,18 @@ public class MessageStorageHandler {
 				// deviceId).getBytes(), saveType.getBytes(),
 				// SerializeUtil.serialize(queue));
 
-//				AppInfoHandler.getInstance().sendStatusChange(appId, profileId, deviceId, 1);
-//
-//				DeviceConfirmHandler.getInstance().saveMessageToConfirm(messageId, appId, deviceId,
-//						command.getCommandId(), command.getCommandState());
-			}else{
+				// AppInfoHandler.getInstance().sendStatusChange(appId,
+				// profileId, deviceId, 1);
+				//
+				// DeviceConfirmHandler.getInstance().saveMessageToConfirm(messageId,
+				// appId, deviceId,
+				// command.getCommandId(), command.getCommandState());
+			} else {
 				result = null;
 			}
 		}
 
+		CacheHandler.getInstance().returnDownLock(generateKey(appId, profileId, deviceId));
 		jedisPool.returnResource(jedis);
 
 		return result;
@@ -148,6 +162,10 @@ public class MessageStorageHandler {
 		Jedis jedis = jedisPool.getResource();
 		String result = null;
 
+		// 取读写锁
+		while (!CacheHandler.getInstance().getDownLock(generateKey(appId, profileId, deviceId))) {
+
+		}
 		byte[] message = jedis.hget(generateKey(appId, profileId, deviceId).getBytes(), saveType.getBytes());
 
 		Queue queue = null;
@@ -164,20 +182,20 @@ public class MessageStorageHandler {
 					messageMap.put("packetId", messageId);
 					DeviceConfirmHandler.getInstance().saveMessageToConfirm(messageId, appId, deviceId,
 							command.getCommandId(), command.getCommandState());
-					
+
 					Queue tempQueue = new LinkedBlockingQueue();
 					tempQueue.offer(messageMap);
-					
+
 					queue.poll();
-					while(!queue.isEmpty()){
+					while (!queue.isEmpty()) {
 						tempQueue.offer(queue.poll());
 					}
-					
+
 					queue = tempQueue;
-					
+
 				} else if (!packetId.equals(messageId)) {
 					queue.poll();
-					
+
 					command.setCommandId((int) messageMap.get("primaryId"));
 					command.setCommandDeviceId(deviceId);
 					command.setCommandDirection(saveType);
@@ -190,10 +208,12 @@ public class MessageStorageHandler {
 
 				AppInfoHandler.getInstance().sendStatusChange(appId, profileId, deviceId, 1);
 
-				
 			}
+		} else {
+			queue = new LinkedBlockingQueue();
 		}
 
+		CacheHandler.getInstance().returnDownLock(generateKey(appId, profileId, deviceId));
 		jedisPool.returnResource(jedis);
 
 		return !queue.isEmpty();

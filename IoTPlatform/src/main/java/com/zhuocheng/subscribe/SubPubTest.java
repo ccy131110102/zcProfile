@@ -2,8 +2,8 @@ package com.zhuocheng.subscribe;
 
 import java.text.ParseException;
 import java.util.Date;
-
-import com.zhuocheng.handler.HttpRequest;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 public class SubPubTest {
 	public static void main(String[] args) throws ParseException {
@@ -20,5 +20,8 @@ public class SubPubTest {
 //		publisher1.publish(subscribePublish, "yy", false, "up", "1", "", "");
 		
 		System.out.println(new Date().getTime());
+		Set s = new LinkedHashSet<>();
+		s.add(1);
+		System.out.println(s.add(1));
 	}
 }

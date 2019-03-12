@@ -313,8 +313,6 @@ public class DeviceController {
 		}
 
 		try {
-			dprocessor = ProcessorFactory.createDecodeProcessor(message, jedisPool);
-
 			if (command.equals("00")) {
 				// 取暂存指令
 
@@ -355,6 +353,7 @@ public class DeviceController {
 						.toUpperCase());
 				response.flushBuffer();
 			} else {
+				dprocessor = ProcessorFactory.createDecodeProcessor(message, jedisPool);
 				// 既不是00也不是FF，则为上传动作，将相应上传信息解码并保存回调
 				dprocessor.publish(dprocessor.decode(), Constant.PUBLISH_TYPE_PROPERTIES);
 

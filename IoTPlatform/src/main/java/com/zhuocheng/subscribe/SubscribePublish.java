@@ -9,6 +9,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
+import com.zhuocheng.constant.Constant;
 import com.zhuocheng.exception.HttpRequestException;
 import com.zhuocheng.exception.ProfileHandleException;
 import com.zhuocheng.handler.ProfileHandler;
@@ -32,7 +33,7 @@ public class SubscribePublish<M> {
 	private List<ISubcriber> subcribers = new ArrayList<ISubcriber>();
 
 	private Logger logger = Logger.getLogger(SubscribePublish.class);
-	
+
 	private ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
 	/**
@@ -57,7 +58,7 @@ public class SubscribePublish<M> {
 		}
 
 		System.out.println(instance.subcribers.size());
-		
+
 		return instance;
 	}
 
@@ -66,29 +67,36 @@ public class SubscribePublish<M> {
 	 * @param profileId
 	 * @param Msg
 	 * @param isInstantMsg
-	 * @throws HttpRequestException 
-	 * @throws ProfileHandleException 
+	 * @throws HttpRequestException
+	 * @throws ProfileHandleException
 	 */
-	public String publish(String profileId, M message, boolean isInstantMsg, String subcriberType, String subcriberId, String type, String serviceId, String commandType) throws HttpRequestException, ProfileHandleException {
-		cachedThreadPool.execute(new Runnable() {
+	public String publish(String profileId, M message, boolean isInstantMsg, String subcriberType, String subcriberId,
+			String type, String serviceId, String commandType) throws HttpRequestException, ProfileHandleException {
+		String saveId = "";
+		if (!commandType.equals(Constant.PUBLISH_TYPE_METHOD)) {
+			cachedThreadPool.execute(new Runnable() {
 
-			@Override
-			public void run() {
-				try {
-					update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
-				} catch (HttpRequestException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					logger.error(e.getStackTrace());
-				} catch (ProfileHandleException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-					logger.error(e.getStackTrace());
+				@Override
+				public void run() {
+					try {
+						update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
+					} catch (HttpRequestException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						logger.error(e.getStackTrace());
+					} catch (ProfileHandleException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						logger.error(e.getStackTrace());
+					}
 				}
-			}
-		});
-		
-		return "";
+			});
+			
+		}else{
+			saveId = update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
+		}
+
+		return saveId;
 	}
 
 	/**
@@ -112,13 +120,14 @@ public class SubscribePublish<M> {
 	/**
 	 * @Description: 发送存储队列所有消息
 	 * @return: void
-	 * @throws HttpRequestException 
-	 * @throws ProfileHandleException 
+	 * @throws HttpRequestException
+	 * @throws ProfileHandleException
 	 */
 	public void update() throws HttpRequestException, ProfileHandleException {
 		Msg m = null;
 		while ((m = queue.poll()) != null) {
-			this.update(m.getPublisher(), (M) m.getMsg(), m.getSubcriberType(), m.getSubcriberId(), m.getType(), m.getServiceId(), m.getCommandType());
+			this.update(m.getPublisher(), (M) m.getMsg(), m.getSubcriberType(), m.getSubcriberId(), m.getType(),
+					m.getServiceId(), m.getCommandType());
 		}
 	}
 
@@ -127,24 +136,25 @@ public class SubscribePublish<M> {
 	 * @param profileId
 	 * @param Msg
 	 * @return: void
-	 * @throws HttpRequestException 
-	 * @throws ProfileHandleException 
+	 * @throws HttpRequestException
+	 * @throws ProfileHandleException
 	 */
-	public String update(String profileId, M Msg, String subcriberType, String subcriberId, String type, String serviceId, String commandType) throws HttpRequestException, ProfileHandleException {
+	public String update(String profileId, M Msg, String subcriberType, String subcriberId, String type,
+			String serviceId, String commandType) throws HttpRequestException, ProfileHandleException {
 		String saveId = "";
-		
+
 		for (ISubcriber subcriber : subcribers) {
 			String temp = subcriber.update(profileId, Msg, subcriberType, subcriberId, type, serviceId, commandType);
-			
-			if(temp != ""){
+
+			if (temp != "") {
 				saveId = temp;
 				break;
 			}
 		}
-		
+
 		return saveId;
 	}
-	
+
 	/**
 	 * @Description: 清空订阅队列
 	 */
@@ -165,7 +175,8 @@ class Msg<M> {
 	private String commandType;
 	private M m;
 
-	public Msg(String publisher, M m, String subcriberType, String subcriberId, String type, String serviceId, String commandType) {
+	public Msg(String publisher, M m, String subcriberType, String subcriberId, String type, String serviceId,
+			String commandType) {
 		this.publisher = publisher;
 		this.subcriberType = subcriberType;
 		this.subcriberId = subcriberId;
@@ -230,6 +241,5 @@ class Msg<M> {
 	public void setCommandType(String commandType) {
 		this.commandType = commandType;
 	}
-	
-	
+
 }
