@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,8 @@ import com.zhuocheng.handler.ServiceInfoHandler;
 import com.zhuocheng.mapper.CommandMapper;
 import com.zhuocheng.processor.EncodeProcessor;
 import com.zhuocheng.processor.factory.ProcessorFactory;
+import com.zhuocheng.redis.publisher.Publisher;
+import com.zhuocheng.redis.subscriber.SubThread;
 import com.zhuocheng.subscribe.SubscribePublish;
 import com.zhuocheng.subscribe.Interface.ISubcriber;
 import com.zhuocheng.subscribe.implement.SubcriberImpl;
@@ -45,7 +48,17 @@ public class ServiceController {
 	JedisPool jedisPool;
 	@Autowired
 	private CommandMapper CommandMapper;
+	
+	@Value("#{redisConfig['redis.host']}") 
+	String redisIp;
+	@Value("#{redisConfig['redis.port']}") 
+	String redisPort;
+	@Value("#{redisConfig['redis.password']}") 
+	String redisPassword;
 
+	private Publisher publisher;
+	private SubThread subThread;
+	
 	private Logger logger = Logger.getLogger(ServiceController.class);
 
 	/**
@@ -62,6 +75,7 @@ public class ServiceController {
 		MessageStorageHandler.init(jedisPool, CommandMapper);
 		ServiceInfoHandler.init(jedisPool);
 		AppInfoHandler.init(jedisPool);
+		CacheHandler.initRedisson(redisIp, redisPort, redisPassword);
 
 		SubscribePublish.getInstance().clearSubcriber();
 		Jedis jedis = jedisPool.getResource();
@@ -136,6 +150,12 @@ public class ServiceController {
 		
 		CacheHandler.init(localMethodCacheMap, localPropertiesCacheMap, deviceMap, appMap);
 		jedisPool.returnResource(jedis);
+		
+		if(publisher == null && subThread == null){
+			publisher = new Publisher(jedisPool);    //发布者
+			subThread = new SubThread(jedisPool, this);
+			subThread.start();
+		}
 	}
 
 	/**
@@ -451,6 +471,7 @@ public class ServiceController {
 	@ResponseBody
 	public String testL() {
 		String v = "FirstFlight　　Mr.Johnsonhadneverbeenupinanaerophanebeforeandhehadreadalotaboutairaccidents,soonedaywhenafriendofferedtotakehimforarideinhisownsmallphane,Mr.Johnsonwasveryworriedaboutaccepting.Finally,however,hisfriendpersuadedhimthatitwasverysafe,andMr.Johnsonboardedtheplane.　　Hisfriendstartedtheengineandbegantotaxiontotherunwayoftheairport.Mr.Johnsonhadheardthatthemostdangerouspartofaflightwerethetake-offandthelanding,sohewasextremelyfrightenedandclosedhiseyes.　　Afteraminuteortwoheopenedthemagain,lookedoutofthewindowoftheplane,andsaidtohisfriend,Lookatthosepeopledownthere.Theylookassmallasants,don'tthey?　　Thoseareants,answeredhisfriend.We'restillontheground.";
+		publisher.pub();
 		return v + v + v + v;
 	}
 

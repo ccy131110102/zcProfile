@@ -66,9 +66,8 @@ public class MessageStorageHandler {
 		Queue queue = null;
 
 		// 获取读写锁
-		while (!CacheHandler.getInstance().getDownLock(generateKey(appId, profileId, deviceId))) {
+		CacheHandler.acquire(generateKey(appId, profileId, deviceId));
 
-		}
 		if (SerializeUtil.unserialize(retireMessageQueue(appId, profileId, deviceId, saveType)) == null) {
 			queue = new LinkedBlockingQueue();
 		} else {
@@ -99,7 +98,9 @@ public class MessageStorageHandler {
 			jedis.hset(generateKey(appId, profileId, deviceId).getBytes(), saveType.getBytes(),
 					SerializeUtil.serialize(queue));
 		}
-		CacheHandler.getInstance().returnDownLock(generateKey(appId, profileId, deviceId));
+
+		// 解锁
+		CacheHandler.release(generateKey(appId, profileId, deviceId));
 
 		jedisPool.returnResource(jedis);
 		return String.valueOf(command.getCommandId());
@@ -112,10 +113,8 @@ public class MessageStorageHandler {
 		Jedis jedis = jedisPool.getResource();
 		String result = null;
 
-		// 取读写锁
-		while (!CacheHandler.getInstance().getDownLock(generateKey(appId, profileId, deviceId))) {
-
-		}
+		// 获取读写锁
+		CacheHandler.acquire(generateKey(appId, profileId, deviceId));
 
 		byte[] message = jedis.hget(generateKey(appId, profileId, deviceId).getBytes(), saveType.getBytes());
 
@@ -148,7 +147,8 @@ public class MessageStorageHandler {
 			}
 		}
 
-		CacheHandler.getInstance().returnDownLock(generateKey(appId, profileId, deviceId));
+		// 解锁
+		CacheHandler.release(generateKey(appId, profileId, deviceId));
 		jedisPool.returnResource(jedis);
 
 		return result;
@@ -162,10 +162,9 @@ public class MessageStorageHandler {
 		Jedis jedis = jedisPool.getResource();
 		String result = null;
 
-		// 取读写锁
-		while (!CacheHandler.getInstance().getDownLock(generateKey(appId, profileId, deviceId))) {
+		// 获取读写锁
+		CacheHandler.acquire(generateKey(appId, profileId, deviceId));
 
-		}
 		byte[] message = jedis.hget(generateKey(appId, profileId, deviceId).getBytes(), saveType.getBytes());
 
 		Queue queue = null;
@@ -213,7 +212,8 @@ public class MessageStorageHandler {
 			queue = new LinkedBlockingQueue();
 		}
 
-		CacheHandler.getInstance().returnDownLock(generateKey(appId, profileId, deviceId));
+		// 解锁
+		CacheHandler.release(generateKey(appId, profileId, deviceId));
 		jedisPool.returnResource(jedis);
 
 		return !queue.isEmpty();
@@ -226,6 +226,9 @@ public class MessageStorageHandler {
 		Jedis jedis = jedisPool.getResource();
 		String result = null;
 
+		// 获取读写锁
+		CacheHandler.acquire(generateKey(appId, profileId, deviceId));
+
 		byte[] message = jedis.hget(generateKey(appId, profileId, deviceId).getBytes(), saveType.getBytes());
 
 		if (message != null) {
@@ -237,6 +240,8 @@ public class MessageStorageHandler {
 			}
 		}
 
+		// 解锁
+		CacheHandler.release(generateKey(appId, profileId, deviceId));
 		jedisPool.returnResource(jedis);
 
 		return false;
@@ -247,8 +252,13 @@ public class MessageStorageHandler {
 	 */
 	private byte[] retireMessageQueue(String appId, String profileId, String deviceId, String saveType) {
 		Jedis jedis = jedisPool.getResource();
+		// 获取读写锁
+		CacheHandler.acquire(generateKey(appId, profileId, deviceId));
 
 		byte[] message = jedis.hget(generateKey(appId, profileId, deviceId).getBytes(), saveType.getBytes());
+
+		// 解锁
+		CacheHandler.release(generateKey(appId, profileId, deviceId));
 		jedisPool.returnResource(jedis);
 
 		return message;

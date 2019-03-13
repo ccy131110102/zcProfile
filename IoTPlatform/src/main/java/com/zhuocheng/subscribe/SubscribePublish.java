@@ -1,11 +1,13 @@
 package com.zhuocheng.subscribe;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import org.apache.log4j.Logger;
 
@@ -74,7 +76,7 @@ public class SubscribePublish<M> {
 			String type, String serviceId, String commandType) throws HttpRequestException, ProfileHandleException {
 		String saveId = "";
 		if (!commandType.equals(Constant.PUBLISH_TYPE_METHOD)) {
-			cachedThreadPool.execute(new Runnable() {
+			cachedThreadPool.submit(new Runnable() {
 
 				@Override
 				public void run() {

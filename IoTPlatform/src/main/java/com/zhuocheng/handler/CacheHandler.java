@@ -1,10 +1,11 @@
 package com.zhuocheng.handler;
 
-import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
-import redis.clients.jedis.JedisPool;
+import org.redisson.Redisson;
+import org.redisson.api.RLock;
+import org.redisson.config.Config;
 
 public class CacheHandler {
 
@@ -13,25 +14,31 @@ public class CacheHandler {
 	private Map localDeviceCache;
 	private Map localAppCache;
 
-	private Set<String> downLock;
-	private boolean initLock;
-
 	// 单例对象
-	private static CacheHandler instance = null;
+	private static CacheHandler instance = new CacheHandler();
+	
+	private static Config config = null;
+    //声明redisso对象
+    private static Redisson redisson = null;
 
 	// 屏蔽构造函数
 	private CacheHandler() {
 	}
 
+	public static void initRedisson(String ip, String port, String password){
+		instance.config = new Config();
+		instance.config.useSingleServer().setAddress(ip + ":" + port);
+		instance.config.useSingleServer().setPassword(password);
+		 redisson = (Redisson) Redisson.create(config);
+	}
+	
 	public static void init(Map methodCache, Map propertiesCache, Map deviceCache, Map appCache) {
-		CacheHandler.instance = new CacheHandler();
-		instance.initLock = true;
+		CacheHandler.acquire("initLock");
 		instance.localMethodCache = methodCache;
 		instance.localPropertiesCache = propertiesCache;
 		instance.localDeviceCache = deviceCache;
 		instance.localAppCache = appCache;
-		instance.initLock = false;
-		instance.downLock = new LinkedHashSet<String>();
+		CacheHandler.release("initLock");
 	}
 
 	/**
@@ -43,7 +50,7 @@ public class CacheHandler {
 	}
 
 	public Map getLocalMethodCache() {
-		while (this.initLock) {
+		while (CacheHandler.searchLock("initLock")) {
 
 		}
 
@@ -51,7 +58,7 @@ public class CacheHandler {
 	}
 
 	public Map getLocalPropertiesCache() {
-		while (this.initLock) {
+		while (CacheHandler.searchLock("initLock")) {
 
 		}
 
@@ -59,7 +66,7 @@ public class CacheHandler {
 	}
 
 	public Map getLocalDeviceCache() {
-		while (this.initLock) {
+		while (CacheHandler.searchLock("initLock")) {
 
 		}
 
@@ -67,41 +74,40 @@ public class CacheHandler {
 	}
 
 	public Map getLocalAppCache() {
-		while (this.initLock) {
+		while (CacheHandler.searchLock("initLock")) {
 
 		}
 
 		return localAppCache;
 	}
 
-	/**
-	 * @Description: 当下发指令时，将进行下发动作的设备加读写锁
-	 * @param deviceKey
-	 *            设备key
-	 */
-	public boolean getDownLock(String deviceKey) {
-		synchronized (this) {
-			return downLock.add(deviceKey);
-		}
-	}
-
-	/**
-	 * @Description: 解除指定设备的锁
-	 * @param deviceKey
-	 *            设备key
-	 */
-	public void returnDownLock(String deviceKey) {
-		if (downLock.contains(deviceKey)) {
-			downLock.remove(deviceKey);
-		}
-	}
-
-	/**
-	 * @Description: 查询当前设备是否有锁
-	 * @param deviceKey
-	 *            设备key
-	 */
-	public boolean canGetDownLock(String deviceKey) {
-		return downLock.contains(deviceKey);
-	}
+	//加锁
+    public static void acquire(String lockName){
+       //声明key对象
+        String key = "LOCK" + lockName;
+       //获取锁对象
+        RLock lock = redisson.getLock(key);
+       //加锁，并且设置锁过期时间，防止死锁的产生
+        lock.lock(2, TimeUnit.SECONDS); 
+        System.err.println("===" + lockName + "===lock======" + Thread.currentThread().getName());
+    }
+  //锁的释放
+    public static void release(String lockName){
+       //必须是和加锁时的同一个key
+        String key = "LOCK" + lockName;
+       //获取所对象
+        RLock lock = redisson.getLock(key);
+      //释放锁（解锁）
+        lock.unlock();
+        System.err.println("===" + lockName + "===unlock======"+Thread.currentThread().getName());
+    }
+    // 查询是否锁
+    public static boolean searchLock(String lockName){
+       //必须是和加锁时的同一个key
+        String key = "LOCK" + lockName;
+       //获取所对象
+        RLock lock = redisson.getLock(key);
+      //释放锁（解锁）
+        return lock.isLocked();
+    }
 }
