@@ -292,7 +292,7 @@ public class DeviceController {
 
 		// 用于保存返回报文
 		String sendStr = "";
-		PrintWriter pw;
+		PrintWriter pw = null;
 
 		DecodeProcessor dprocessor;
 		String combileMessageStr = null;
@@ -412,6 +412,9 @@ public class DeviceController {
 					.hasNextMessage(appId, profileId, deviceId, Constant.COMMAND_SAVETYPE_DOWN), command)
 					.toUpperCase());
 			response.flushBuffer();
+		}finally {
+			System.out.println("close");
+			pw.close();
 		}
 
 	}

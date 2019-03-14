@@ -88,7 +88,7 @@ public class CacheHandler {
        //获取锁对象
         RLock lock = redisson.getLock(key);
        //加锁，并且设置锁过期时间，防止死锁的产生
-        lock.lock(2, TimeUnit.SECONDS); 
+        lock.lock(1, TimeUnit.SECONDS); 
         System.err.println("===" + lockName + "===lock======" + Thread.currentThread().getName());
     }
   //锁的释放

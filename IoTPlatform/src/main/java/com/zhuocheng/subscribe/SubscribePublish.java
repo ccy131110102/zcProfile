@@ -75,28 +75,28 @@ public class SubscribePublish<M> {
 	public String publish(String profileId, M message, boolean isInstantMsg, String subcriberType, String subcriberId,
 			String type, String serviceId, String commandType) throws HttpRequestException, ProfileHandleException {
 		String saveId = "";
-		if (!commandType.equals(Constant.PUBLISH_TYPE_METHOD)) {
-			cachedThreadPool.submit(new Runnable() {
-
-				@Override
-				public void run() {
-					try {
-						update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
-					} catch (HttpRequestException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						logger.error(e.getStackTrace());
-					} catch (ProfileHandleException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						logger.error(e.getStackTrace());
-					}
-				}
-			});
-			
-		}else{
+//		if (!commandType.equals(Constant.PUBLISH_TYPE_METHOD)) {
+//			cachedThreadPool.submit(new Runnable() {
+//
+//				@Override
+//				public void run() {
+//					try {
+//						update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
+//					} catch (HttpRequestException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//						logger.error(e.getStackTrace());
+//					} catch (ProfileHandleException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//						logger.error(e.getStackTrace());
+//					}
+//				}
+//			});
+//			
+//		}else{
 			saveId = update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
-		}
+//		}
 
 		return saveId;
 	}
