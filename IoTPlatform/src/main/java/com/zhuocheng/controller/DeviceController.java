@@ -301,7 +301,17 @@ public class DeviceController {
 
 		// 根据当前设备的编号从redis中获取相应的设备及profile信息
 		String deviceId = String.valueOf(Long.parseLong(new DeviceMessageHandler(message).getAddress(), 16));
+		System.out.println(deviceId);
 		Map deviceInfoMap = DeviceInfoHandler.getInstance().getDeviceInfoByDeviceId(deviceId);
+		
+		if(deviceInfoMap == null){
+			pw = response.getWriter();
+			pw.write(combileMessageStr.toUpperCase());
+			response.flushBuffer();
+			pw.close();
+			return;
+		}
+		
 		String appId = (String) deviceInfoMap.get(Constant.DEVICEINFO_APPID);
 		String profileId = (String) deviceInfoMap.get(Constant.DEVICEINFO_PROFILEID);
 
@@ -413,7 +423,6 @@ public class DeviceController {
 					.toUpperCase());
 			response.flushBuffer();
 		}finally {
-			System.out.println("close");
 			pw.close();
 		}
 

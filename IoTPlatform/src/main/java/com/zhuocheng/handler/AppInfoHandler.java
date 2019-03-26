@@ -105,11 +105,13 @@ public class AppInfoHandler {
 	 * @Description: 获取callBackURL
 	 */
 	public Map getCallBackURL(String appId, String profileId) {
-		Jedis jedis = jedisPool.getResource();
-		String resultMap = jedis.hget("SERVICE", appId + "-" + profileId);
+//		Jedis jedis = jedisPool.getResource();
+//		String resultMap = jedis.hget("SERVICE", appId + "-" + profileId);
+//		
+//		jedisPool.returnResource(jedis);
+//		return (Map) JSONObject.parse(resultMap, Feature.OrderedField);
 		
-		jedisPool.returnResource(jedis);
-		return (Map) JSONObject.parse(resultMap, Feature.OrderedField);
+		return null;
 	}
 
 	/**

@@ -72,31 +72,30 @@ public class SubscribePublish<M> {
 	 * @throws HttpRequestException
 	 * @throws ProfileHandleException
 	 */
-	public String publish(String profileId, M message, boolean isInstantMsg, String subcriberType, String subcriberId,
-			String type, String serviceId, String commandType) throws HttpRequestException, ProfileHandleException {
+	public String publish(final String profileId, final M message, boolean isInstantMsg, final String subcriberType, final String subcriberId,
+			final String type, final String serviceId, final String commandType) throws HttpRequestException, ProfileHandleException {
 		String saveId = "";
-//		if (!commandType.equals(Constant.PUBLISH_TYPE_METHOD)) {
-//			cachedThreadPool.submit(new Runnable() {
-//
-//				@Override
-//				public void run() {
-//					try {
-//						update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
-//					} catch (HttpRequestException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//						logger.error(e.getStackTrace());
-//					} catch (ProfileHandleException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//						logger.error(e.getStackTrace());
-//					}
-//				}
-//			});
-//			
-//		}else{
+		if (!commandType.equals(Constant.PUBLISH_TYPE_METHOD)) {
+			cachedThreadPool.submit(new Runnable() {
+
+				public void run() {
+					try {
+						update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
+					} catch (HttpRequestException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						logger.error(e.getStackTrace());
+					} catch (ProfileHandleException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						logger.error(e.getStackTrace());
+					}
+				}
+			});
+			
+		}else{
 			saveId = update(profileId, message, subcriberType, subcriberId, type, serviceId, commandType);
-//		}
+		}
 
 		return saveId;
 	}

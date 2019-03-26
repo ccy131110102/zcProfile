@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.zhuocheng</groupId>
-	<artifactId>ConnectMonitor</artifactId>
+	<artifactId>IoTPlatform</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>movie Maven Webapp</name>
+	<name>IoTPlatform</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
@@ -129,12 +129,7 @@
 		</dependency>
 
 		<!-- Use 'netty-all' for 4.0 or above -->
-		<dependency>
-			<groupId>io.netty</groupId>
-			<artifactId>netty-all</artifactId>
-			<version>4.1.10.Final</version>
-			<scope>compile</scope>
-		</dependency>
+		
 
 		<dependency>
 			<groupId>org.redisson</groupId>
@@ -143,6 +138,6 @@
 		</dependency>
 	</dependencies>
 	<build>
-		<finalName>ConnectMonitor</finalName>
+		<finalName>IoTPlatform</finalName>
 	</build>
 </project>

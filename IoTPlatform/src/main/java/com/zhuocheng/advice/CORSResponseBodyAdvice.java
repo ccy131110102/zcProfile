@@ -13,7 +13,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 @ControllerAdvice
 public class CORSResponseBodyAdvice implements ResponseBodyAdvice{
 
-    @Override
     public Object beforeBodyWrite(Object returnValue, MethodParameter methodParameter,
             MediaType mediaType, Class clas, ServerHttpRequest serverHttpRequest,
             ServerHttpResponse serverHttpResponse) {
@@ -25,7 +24,6 @@ public class CORSResponseBodyAdvice implements ResponseBodyAdvice{
     	return returnValue;
     }
 
-    @Override
     public boolean supports(MethodParameter methodParameter, Class clas) {
         return true;
     }

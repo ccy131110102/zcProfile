@@ -1,9 +1,13 @@
 package com.zhuocheng.handler;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.alibaba.fastjson.JSONArray;
 import com.zhuocheng.constant.Constant;
@@ -57,42 +61,41 @@ public class ServiceMessageHandler {
 		// 3.获取设备的注册信息，用于获取控制码
 		Map deviceInfoMap = DeviceInfoHandler.getInstance().getDeviceInfoByDeviceKey(deviceId);
 		this.control = (String) deviceInfoMap.get(Constant.DEVICEINFO_CONTROL);
-		
-		
+
 		this.profile = ProfileHandler.getInstance().getEncodeProfileByMethod(serviceId, method, profileId, appId);
-		
+
 		// 4.根据profile拼接数据域
 		this.data = combileDataByProfile(this.paras);
-		
+
 		System.out.println("数据域 " + this.data);
-		
+
 		this.length = Integer.toHexString(18 + this.data.length() / 2);
 
 		this.deviceId = ((String) serviceMessage.get(Constant.SERVICE_MESSAGE_DEVICEID)).split("-")[2];
 		this.address = deviceId;
-		
+
 		this.check = getCheckCode(start + id + control + length + timestamp + address + command + data);
 
-		
 	}
 
 	/**
 	 * @Description: 计算校验码
 	 */
 	public String getCheckCode(String tempStr) {
-		
-		System.out.println("校验码 " + tempStr);
-		
 		String regex = "(.{2})";
-		tempStr = tempStr.replaceAll(regex, "$1,");
-		tempStr = tempStr.substring(0, tempStr.length() - 1);
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(tempStr);
 
-		String[] temp = tempStr.split(",");
+		List<String> tempList = new ArrayList<String>();
+
+		while (m.find()) {
+			tempList.add(m.group());
+		}
 
 		int sum = 0;
 
-		for (int i = 0; i < temp.length; i++) {
-			sum = (sum + Integer.parseInt(temp[i], 16));
+		for (int i = 0; i < tempList.size(); i++) {
+			sum = (sum + Integer.parseInt(tempList.get(i), 16));
 		}
 
 		// 校验码计算过程:取校验位前的每一位进行算数求和，将得到的结果和FF进行异或运算
@@ -129,16 +132,16 @@ public class ServiceMessageHandler {
 		result.put("method", method);
 		result.put("deviceId", deviceId);
 		result.put("profileId", profileId);
-		
+
 		result.put("paras", paras);
-		
+
 		return result;
 		// return start + id + control + length + timestamp + address + command
 		// + data + check + end;
 	}
 
 	public static String messageMapToMessage(Map messageMap) {
-		
+
 		String s = (String) messageMap.get("start");
 		String i = (String) messageMap.get("id");
 		String cl = (String) messageMap.get("control");
@@ -181,7 +184,7 @@ public class ServiceMessageHandler {
 	}
 
 	/**
-	 * @throws ParseException 
+	 * @throws ParseException
 	 * @Description: 根据profile对数据域进行编码并返回
 	 */
 	private String combileDataByProfile(Map paras) throws ParseException {
@@ -195,14 +198,15 @@ public class ServiceMessageHandler {
 		Map propertiesMap = (Map) profileMap.get(serverId);
 		Iterator propertiesIt = propertiesMap.keySet().iterator();
 		String serivceType = "";
-		while(propertiesIt.hasNext()){
+		while (propertiesIt.hasNext()) {
 			serivceType = (String) propertiesIt.next();
-			if(serivceType.equals(Constant.SERVICE_MESSAGE_COMMAND_PARAS)||serivceType.equals(Constant.PUBLISH_TYPE_PROPERTIES)){
+			if (serivceType.equals(Constant.SERVICE_MESSAGE_COMMAND_PARAS)
+					|| serivceType.equals(Constant.PUBLISH_TYPE_PROPERTIES)) {
 				break;
 			}
 		}
-		
-//		Map methodMap = (Map) propertiesMap.get(serivceType);
+
+		// Map methodMap = (Map) propertiesMap.get(serivceType);
 		JSONArray paraList = (JSONArray) propertiesMap.get(serivceType);
 		this.command = propertiesMap.get("commandId").toString().replaceAll("0x", "");
 
@@ -210,7 +214,7 @@ public class ServiceMessageHandler {
 		String dataStr = "";
 
 		System.out.println("参数列表 " + paraList);
-		
+
 		for (Object para : paraList) {
 			String paraName = (String) ((Map) para).get(Constant.PARAS_PROPERTYNAME);
 			String paraType = (String) ((Map) para).get(Constant.PARAS_DATATYPE);

@@ -1,9 +1,13 @@
 package com.zhuocheng.handler;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.zhuocheng.constant.Constant;
 
@@ -92,7 +96,7 @@ public class DeviceMessageHandler {
 		}
 		
 		this.length = Integer.toHexString(18 + this.data.length() / 2);
-		this.check = getCheckCode(start + id + control + length + timestamp + address + command + data);
+		this.check = getCheckCode(start + id + control + length + timestamp + address + this.command + data);
 		
 		return start + id + control + length + timestamp + address + this.command + data + check + end;
 	}
@@ -102,15 +106,19 @@ public class DeviceMessageHandler {
 	 */
 	public String getCheckCode(String tempStr) {
 		String regex = "(.{2})";
-		tempStr = tempStr.replaceAll(regex, "$1,");
-		tempStr = tempStr.substring(0, data.length() - 1);
-
-		String[] temp = tempStr.split(",");
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(tempStr);
+		
+		List<String>  tempList =  new ArrayList<String>();
+		
+		while(m.find()){
+			tempList.add(m.group());
+		}
 
 		int sum = 0;
 
-		for (int i = 0; i < temp.length; i++) {
-			sum = (sum + Integer.parseInt(temp[i], 16));
+		for (int i = 0; i < tempList.size(); i++) {
+			sum = (sum + Integer.parseInt(tempList.get(i), 16));
 		}
 
 		// 校验码计算过程:取校验位前的每一位进行算数求和，将得到的结果和FF进行异或运算

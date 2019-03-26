@@ -33,7 +33,7 @@ public class UDPServer {
 		b.bind(port).sync().channel().closeFuture().await();
 	}
 
-	@PostConstruct
+//	@PostConstruct
 	public void runServer() throws Exception {
 		System.out.println("---------udpServerStart");
 		cachedThreadPool.execute(new Runnable() {
