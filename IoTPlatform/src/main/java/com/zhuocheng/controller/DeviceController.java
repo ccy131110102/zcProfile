@@ -306,7 +306,7 @@ public class DeviceController {
 		
 		if(deviceInfoMap == null){
 			pw = response.getWriter();
-			pw.write(combileMessageStr.toUpperCase());
+			pw.write("");
 			response.flushBuffer();
 			pw.close();
 			return;
