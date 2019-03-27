@@ -1,15 +1,12 @@
 package com.zhuocheng.handler;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.zhuocheng.constant.Constant;
+import com.zhuocheng.util.SerializeUtil;
 
 /**
  * @Description: 设备消息处理工具类
@@ -96,42 +93,11 @@ public class DeviceMessageHandler {
 		}
 		
 		this.length = Integer.toHexString(18 + this.data.length() / 2);
-		this.check = getCheckCode(start + id + control + length + timestamp + address + this.command + data);
+		this.check = SerializeUtil.getCheckCode(start + id + control + length + timestamp + address + this.command + data);
 		
 		return start + id + control + length + timestamp + address + this.command + data + check + end;
 	}
 
-	/**
-	 * @Description: 计算校验码
-	 */
-	public String getCheckCode(String tempStr) {
-		String regex = "(.{2})";
-		Pattern p = Pattern.compile(regex);
-		Matcher m = p.matcher(tempStr);
-		
-		List<String>  tempList =  new ArrayList<String>();
-		
-		while(m.find()){
-			tempList.add(m.group());
-		}
-
-		int sum = 0;
-
-		for (int i = 0; i < tempList.size(); i++) {
-			sum = (sum + Integer.parseInt(tempList.get(i), 16));
-		}
-
-		// 校验码计算过程:取校验位前的每一位进行算数求和，将得到的结果和FF进行异或运算
-		String result = Integer.toHexString(sum ^ 0xFF);
-
-		if (result.length() == 1) {
-			result = "0" + result;
-		} else {
-			result = result.substring(result.length() - 2, result.length());
-		}
-
-		return result;
-	}
 	
 	/**
 	 * @Description: 倒置时间戳
