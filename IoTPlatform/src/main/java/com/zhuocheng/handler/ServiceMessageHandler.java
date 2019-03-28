@@ -71,7 +71,7 @@ public class ServiceMessageHandler {
 		this.deviceId = ((String) serviceMessage.get(Constant.SERVICE_MESSAGE_DEVICEID)).split("-")[2];
 		this.address = deviceId;
 
-		this.check = SerializeUtil.getCheckCode(start + id + control + length + timestamp + address + command + data);
+//		this.check = SerializeUtil.getCheckCode(start + id + control + length + timestamp + address + command + data);
 
 	}
 
